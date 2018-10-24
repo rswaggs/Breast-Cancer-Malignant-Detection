@@ -1,0 +1,317 @@
+New table for data to train:
+*********************************
+Queries with only mean values
+*********************************
+
+Delete upload_time, and add column to upload notes if possible (for proper DB design). If you can make the programatic flow work, make sure the file 
+
+CREATE TABLE train_data (
+  id BIGINT AUTO_INCREMENT,
+  upload_notes_id INT NOT NULL,
+  diagnosis CHAR(1) NOT NULL,
+  radius_mean FLOAT(6,5),
+  texture_mean FLOAT(6,5),
+  perimeter_mean FLOAT(6,5),
+  area_mean FLOAT(6,5),
+  smoothness_mean FLOAT(6,5),
+  compactness_mean FLOAT(6,5),
+  concavity_mean FLOAT(6,5),
+  concave_points_mean FLOAT(6,5),
+  symmetry_mean FLOAT(6,5),
+  fractal_dimension_mean FLOAT(6,5),
+  PRIMARY KEY (id),
+  FOREIGN KEY (upload_notes_id) REFERENCES data_upload_notes(id)
+);
+
+=============================
+
+CREATE TABLE `data_upload_notes` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `clinician_id` INT NOT NULL,     	  (Foreign key when other table is available)
+  `upload_time` datetime DEFAULT NULL,
+  `source_notes` varchar(500) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-----------------------------
+
+DELIMITER //
+CREATE PROCEDURE AddToTrainData(
+	IN entry_upload_notes_id INT,
+  	IN entry_diagnosis CHAR(1),
+  	IN entry_radius_mean FLOAT(6,5),
+  	IN entry_texture_mean FLOAT(6,5),
+  	IN entry_perimeter_mean FLOAT(6,5),
+  	IN entry_area_mean FLOAT(6,5),
+  	IN entry_smoothness_mean FLOAT(6,5),
+  	IN entry_compactness_mean FLOAT(6,5),
+  	IN entry_concavity_mean FLOAT(6,5),
+  	IN entry_concave_points_mean FLOAT(6,5),
+  	IN entry_symmetry_mean FLOAT(6,5),
+  	IN entry_fractal_dimension_mean FLOAT(6,5)
+)
+	BEGIN
+		INSERT INTO train_data
+		(
+			upload_notes_id,
+  			diagnosis,
+  			radius_mean,
+  			texture_mean,
+  			perimeter_mean,
+  			area_mean,
+  			smoothness_mean,
+  			compactness_mean,
+  			concavity_mean,
+  			concave_points_mean,
+  			symmetry_mean,
+  			fractal_dimension_mean
+		)
+		VALUES
+		(
+			entry_upload_notes_id,
+  			entry_diagnosis,
+  			entry_radius_mean,
+  			entry_texture_mean,
+  			entry_perimeter_mean,
+  			entry_area_mean,
+  			entry_smoothness_mean,
+  			entry_compactness_mean,
+  			entry_concavity_mean,
+  			entry_concave_points_mean,
+  			entry_symmetry_mean,
+  			entry_fractal_dimension_mean
+		);
+
+	END //
+DELIMITER ;
+
+------------------------------
+
+DELIMITER $$
+CREATE PROCEDURE GetTrainData()
+	BEGIN
+		SELECT 	diagnosis,
+  			radius_mean,
+  			texture_mean,
+  			perimeter_mean,
+  			area_mean,
+  			smoothness_mean,
+  			compactness_mean,
+  			concavity_mean,
+  			concave_points_mean,
+  			symmetry_mean,
+  			fractal_dimension_mean 
+		FROM train_data;
+	END $$
+DELIMITER ;
+
+------------------------------
+
+DELIMITER //
+CREATE PROCEDURE AddToUploadNotes(
+	IN clinician_id INT,
+  	IN upload_time datetime,
+  	IN source_notes varchar(500)
+)
+	BEGIN
+		INSERT INTO data_upload_notes
+		(
+			clinician_id,
+  			upload_time,
+  			source_notes
+		)
+		VALUES
+		(
+			entry_clinician_id,
+  			entry_upload_time,
+  			entry_source_notes
+		);
+
+	END //
+DELIMITER ;
+
+------------------------------
+
+## Grabs the last inserted row ID for the database. Will grab the update notes ID ##immediately after the row is inserted
+DELIMITER $$
+CREATE PROCEDURE GetUploadNotesMostRecentID()
+	BEGIN
+		SELECT LAST_INSERT_ID();
+	END $$
+DELIMITER ;
+
+------------------------------
+
+DELIMITER $$
+CREATE PROCEDURE GetUploadNotes()
+	BEGIN
+		SELECT * FROM data_upload_notes;
+	END $$
+DELIMITER ;
+
+
+
+*********************************
+Queries with all 30 values
+*********************************
+
+CREATE TABLE train_data (
+  id BIGINT AUTO_INCREMENT,
+  username VARCHAR(45) NOT NULL,
+  upload_time DATETIME NOT NULL,
+  diagnosis CHAR(1) NOT NULL,
+  
+  radius_mean FLOAT(6,5),
+  texture_mean FLOAT(6,5),
+  perimeter_mean FLOAT(6,5),
+  area_mean FLOAT(6,5),
+  smoothness_mean FLOAT(6,5),
+  compactness_mean FLOAT(6,5),
+  concavity_mean FLOAT(6,5),
+  concave_points_mean FLOAT(6,5),
+  symmetry_mean FLOAT(6,5),
+  fractal_dimension_mean FLOAT(6,5),
+  
+  radius_se FLOAT(6,5),
+  texture_se FLOAT(6,5),
+  perimeter_se FLOAT(6,5),
+  area_se FLOAT(6,5),
+  smoothness_se FLOAT(6,5),
+  compactness_se FLOAT(6,5),
+  concavity_se FLOAT(6,5),
+  concave_points_se FLOAT(6,5),
+  symmetry_se FLOAT(6,5),
+  fractal_dimension_se FLOAT(6,5),
+  
+  radius_worst FLOAT(6,5),
+  texture_worst FLOAT(6,5),
+  perimeter_worst FLOAT(6,5),
+  area_worst FLOAT(6,5),
+  smoothness_worst FLOAT(6,5),
+  compactness_worst FLOAT(6,5),
+  concavity_worst FLOAT(6,5),
+  concave_points_worst FLOAT(6,5),
+  symmetry_worst FLOAT(6,5),
+  fractal_dimension_worst FLOAT(6,5),
+  
+  PRIMARY KEY (id))
+
+
+
+Procedure to store CSV in database:
+
+DELIMITER //
+CREATE PROCEDURE AddToTrainData(
+	IN entry_id BIGINT,
+  	IN entry_username VARCHAR(45),
+  	IN entry_upload_time DATETIME,
+  	IN entry_diagnosis CHAR(1),
+  	IN entry_radius_mean FLOAT(6,5),
+  	IN entry_texture_mean FLOAT(6,5),
+  	IN entry_perimeter_mean FLOAT(6,5),
+  	IN entry_area_mean FLOAT(6,5),
+  	IN entry_smoothness_mean FLOAT(6,5),
+  	IN entry_compactness_mean FLOAT(6,5),
+  	IN entry_concavity_mean FLOAT(6,5),
+  	IN entry_concave_points_mean FLOAT(6,5),
+  	IN entry_symmetry_mean FLOAT(6,5),
+  	IN entry_fractal_dimension_mean FLOAT(6,5),
+  	IN entry_radius_se FLOAT(6,5),
+  	IN entry_texture_se FLOAT(6,5),
+  	IN entry_perimeter_se FLOAT(6,5),
+  	IN entry_area_se FLOAT(6,5),
+  	IN entry_smoothness_se FLOAT(6,5),
+  	IN entry_compactness_se FLOAT(6,5),
+  	IN entry_concavity_se FLOAT(6,5),
+  	IN entry_concave_points_se FLOAT(6,5),
+  	IN entry_symmetry_se FLOAT(6,5),
+  	IN entry_fractal_dimension_se FLOAT(6,5),
+  	IN entry_radius_worst FLOAT(6,5),
+  	IN entry_texture_worst FLOAT(6,5),
+  	IN entry_perimeter_worst FLOAT(6,5),
+  	IN entry_area_worst FLOAT(6,5),
+  	IN entry_smoothness_worst FLOAT(6,5),
+  	IN entry_compactness_worst FLOAT(6,5),
+  	IN entry_concavity_worst FLOAT(6,5),
+  	IN entry_concave_points_worst FLOAT(6,5),
+  	IN entry_symmetry_worst FLOAT(6,5),
+  	IN entry_fractal_dimension_worst FLOAT(6,5),
+)
+	BEGIN
+		INSERT INTO train_data
+		(
+			id,
+  			username,
+  			upload_time,
+  			diagnosis,
+  			radius_mean,
+  			texture_mean,
+  			perimeter_mean,
+  			area_mean,
+  			smoothness_mean,
+  			compactness_mean,
+  			concavity_mean,
+  			concave_points_mean,
+  			symmetry_mean,
+  			fractal_dimension_mean,
+  			radius_se,
+  			texture_se,
+  			perimeter_se,
+  			area_se,
+  			smoothness_se,
+  			compactness_se,
+  			concavity_se,
+  			concave_points_se,
+  			symmetry_se,
+  			fractal_dimension_se,
+  			radius_worst,
+  			texture_worst,
+  			perimeter_worst,
+  			area_worst,
+  			smoothness_worst,
+  			compactness_worst,
+  			concavity_worst,
+  			concave_points_worst,
+  			symmetry_worst,
+  			fractal_dimension_worst
+		)
+		VALUES
+		(
+			entry_id,
+  			entry_username,
+  			entry_upload_time,
+  			entry_diagnosis,
+  			entry_radius_mean,
+  			entry_texture_mean,
+  			entry_perimeter_mean,
+  			entry_area_mean,
+  			entry_smoothness_mean,
+  			entry_compactness_mean,
+  			entry_concavity_mean,
+  			entry_concave_points_mean,
+  			entry_symmetry_mean,
+  			entry_fractal_dimension_mean,
+  			entry_radius_se,
+  			entry_texture_se,
+  			entry_perimeter_se,
+  			entry_area_se,
+  			entry_smoothness_se,
+  			entry_compactness_se,
+  			entry_concavity_se,
+  			entry_concave_points_se,
+  			entry_symmetry_se,
+  			entry_fractal_dimension_se,
+  			entry_radius_worst,
+  			entry_texture_worst,
+  			entry_perimeter_worst,
+  			entry_area_worst,
+  			entry_smoothness_worst,
+  			entry_compactness_worst,
+  			entry_concavity_worst,
+  			entry_concave_points_worst,
+  			entry_symmetry_worst,
+  			entry_fractal_dimension_worst
+		)
+
+	END //
+DELIMITER ;

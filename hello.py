@@ -32,3 +32,8 @@ def five_hundred_err(e):
 @app.route('/login')
 def login():
     return render_template('login.html')
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
