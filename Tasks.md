@@ -24,7 +24,7 @@
   - [ ] Implement decision tree
     - [ ] 70% training set, 30% test set
     - [ ] Make sure model isn't overfitted
- - [ ] Prediction system
+- [ ] Prediction system
   - [ ] Userform for one user cancer prediction
   - [ ] CSV file for multiple predictions
   - [ ] Function call to run model for prediction (decision tree)
