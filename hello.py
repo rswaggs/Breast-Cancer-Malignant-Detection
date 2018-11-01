@@ -28,10 +28,10 @@ def five_hundred_err(e):
 # def main():
 #     return render_template('main.html')
 
-@app.route('/')
-@app.route('/login')
-def login():
-    return render_template('login.html')
+#@app.route('/')
+#@app.route('/login')
+#def login():
+#    return render_template('login.html')
 
 @app.route('/login')
 def login():
