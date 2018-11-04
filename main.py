@@ -4,6 +4,18 @@ import gc
 import sys
 import traceback
 
+# Data manipulation
+import pandas as pd
+import numpy as np
+
+# Libraries for model training and testing
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn import tree
+
+# For storing model in memory
+from sklearn.externals import joblib
+
 from flask import Flask, render_template, request, url_for, redirect, session, flash, jsonify
 
 user_dict = { 
@@ -135,13 +147,39 @@ tumor_data = {
     'concave points_worst' : 0.2654,
     'symmetry_worst' : 0.4601,
     'fractal_dimension_worst' : 0.1189
-
-
   }
 }
 app = Flask(__name__)
 
 app.config['DEBUG'] = True
+
+# Read in data
+# Change to where dataset is saved
+breast_cancer_df = pd.read_csv('./diagnosis_data.csv')
+
+# Drop columns with not being used in model training/testing
+breast_cancer_df = breast_cancer_df.drop(['id', 'radius_se', 'texture_se', 'perimeter_se', 'area_se', 
+  'smoothness_se', 'compactness_se', 'smoothness_worst', 'compactness_worst', 'concavity_worst', 'concave points_worst',
+  'concavity_se', 'concave points_se', 'symmetry_se',
+  'fractal_dimension_se', 'radius_worst', 'texture_worst', 'perimeter_worst', 'area_worst', 
+  'symmetry_worst', 'fractal_dimension_worst', 'Unnamed: 32'], axis=1)
+
+# Predictor columns for X, truth labels for Y
+X = breast_cancer_df.drop('diagnosis', axis=1)  
+Y = breast_cancer_df['diagnosis']  
+
+# Create train/test split
+X_train, X_test, y_train, y_test = train_test_split( X, Y, test_size = 0.3, random_state = 100)
+
+# Gini index for splitting
+clf = DecisionTreeClassifier(criterion = "gini", random_state = 100,
+                              max_depth=3, min_samples_leaf=5)
+
+# Train
+clf.fit(X_train, y_train)
+
+# Save model in memory
+joblib.dump(clf, 'model.pkl')
 
 @app.errorhandler(400)
 def four_hundred_err(e):
@@ -186,3 +224,26 @@ def mainpage():
 @app.route('/predict')
 def predictpage():  
   return render_template('predict.html', tumor_data=tumor_data['842302'])
+
+@app.route('/results')
+def resultspage():
+  
+  	# Load model for prediction
+    model = joblib.load('model.pkl')
+
+    # OBTAIN DATA BY CSV FILE OR WEBFORM HERE
+    patient_data_1 = [[20.57, 17.77, 132.9, 1326.0, 0.08474, 0.07864, 0.0869, 0.07017, 0.1812, 0.05667]]
+    # patient_data_2 = [[17.99, 10.38, 122.8, 1001, 0.1184, 0.2776, 0.3001, 0.1471, 0.2419, 0.07871]]
+    # patient_data_3 = [[13.54, 14.36, 87.46, 566.3, 0.09779, 0.08129, 0.06664, 0.04781, 0.1885, 0.05766]]
+
+    # Play around with notebook to get familiar with how to extract the values
+    # For value predicted
+    result = model.predict(patient_data_1)
+
+	  # For probabilities of certain classes being predicted
+    model.predict_proba(patient_data_1)
+
+    # Store features in JSON dictionary, or save in database before passing data to results page
+
+    # Show results after prediction
+    return render_template('results.html', result=result)
