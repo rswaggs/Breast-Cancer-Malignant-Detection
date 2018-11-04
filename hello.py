@@ -184,6 +184,5 @@ def mainpage():
   return render_template('main.html', patients=patient_data)
 
 @app.route('/predict')
-def predictpage():
-  
-  return render_template('predict.html', tumor_data=tumor_data)
+def predictpage():  
+  return render_template('predict.html', tumor_data=tumor_data['842302'])
