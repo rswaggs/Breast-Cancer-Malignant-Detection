@@ -7,17 +7,17 @@
 
     <a href="{{ url_for('export_template_file') }}">Get CSV file template</a>
     <!-- <a href="{{ url_for('export_template_file') }}" class="btn btn-default">Get CSV file template</a> -->
-
-    <a href="{{ url_for('export_file') }}">Download breast cancer dataset</a>
+    
+    <!-- <a href="{{ url_for('export_file') }}">Download breast cancer dataset</a> -->
     <!-- <a href="{{ url_for('export_file') }}" class="btn btn-default">Download breast cancer dataset</a> -->
 
-    <h1>Upload CSV</h1>
+    <!-- <h1>Upload CSV</h1>
     <form action = "{{ url_for('data_upload') }}" method = "POST" enctype = "multipart/form-data">
         <input type = "file" name = "file" accept=".csv">
     </form>
 
     <h1>Form Required for Update Notes when Uploading New Dataset</h1>
-    <form class="form-horizontal" method="post" action="{{ url_for('data_upload') }}">
+    <form class="form-horizontal" method="post" action="{{ url_for('data_upload') }}"> -->
 
         <fieldset>
 
@@ -41,13 +41,13 @@
         </div>
 
     </fieldset>
-    </form>
+    </form> 
 
   </div>
 
   <!-- Script for upload update comments -->
   <!-- Need bootstrap and jQuery for this -->
-  <script>
+  <!-- <script>
   $(function() {
     $.ajax({
         url: '/getData',
@@ -80,6 +80,6 @@
         }
     });
   });
-</script>
+</script> -->
 </div>
 {% endblock %}

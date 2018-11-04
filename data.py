@@ -1,5 +1,5 @@
 from flask import Flask, Blueprint, render_template, request, redirect, url_for, Response
-from flask.ext.mysql import MySQL
+from flaskext.mysql import MySQL
 from werkzeug import secure_filename
 import csv
 import time
@@ -27,11 +27,12 @@ data = cursor.fetchone()'''
 
 # Data routes
 #@data_upload.route('/data')
+@app.route('/')
 @app.route('/data')
 def data():
-	return render_template('data.html')
+  return render_template('data.html')
 
-# Get data to display for data route
+'''# Get data to display for data route
 @app.route('/getData')
 def getData():
 	try:
@@ -53,35 +54,45 @@ def getData():
         return json.dumps(notes_dict)
         
     except Exception as e:
-		return render_template('error.html', error = str(e))
+		return render_template('error.html', error = str(e))'''
 
 
+'''
+Author: Ryan Swaggert
+Description: If the clinician needs a CSV template with the proper header format, 
+            in order to run predictions later or upload the data to the MySQL database, 
+            they can download it by clicking the button to run this function. The 
+            downloaded CSV file only contains the required headers, the clinician
+            must add the required data to this CSV file before further action.
+Parameters: None
+Output: Response object containing CSV file
+'''
 @app.route('/data_csv_template', methods = ['GET', 'POST'])
 def export_template_file():
-	try:
-		if request.method == 'POST':
+  try:
+    with open("breast_cancer_template.csv", "w") as download_file:
+      fieldnames = ['diagnosis', 'radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean',
+        'smoothness_mean', 'compactness_mean', 'concave points_mean', 'symmetry_mean', 'fractal_dimension_mean']
+      writer = csv.DictWriter(download_file, fieldnames=fieldnames)
 
-            with open("download_file.csv", "w") as download_file:
-            	fieldnames = ['diagnosis', 'radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean',
-            		'smoothness_mean', 'compactness_mean', 'concave points_mean', 'symmetry_mean', 'fractal_dimension_mean']
-            	writer = csv.DictWriter(download_file, fieldnames=fieldnames)
-
-            	# Create file. Just require the header.
-            	writer.writeheader()
-
-            # Download file
-            return Response(writer,
-                       mimetype="text/csv",
-                       headers={"Content-Disposition":
-                                    "attachment;filename=breast_cancer_template.csv"})
-
-    except Exception as e:
-        return render_template('error.html',error = str(e))
-    finally:
-        # Return to data route
-        return redirect(url_for('data'))
+      # Create file. Just require the header.
+      writer.writeheader()
 
 
+    # Download file
+    return Response(download_file,
+      mimetype="text/csv",
+      headers={"Content-Disposition":
+        "attachment;filename=breast_cancer_template.csv"})
+
+  except Exception as e:
+    return render_template('404.html',error = str(e))
+  finally:
+    # Return to data route
+    return redirect(url_for('data'))
+
+
+'''
 #@data_upload.route('/data_upload', methods = ['GET', 'POST'])
 @app.route('/data_upload', methods = ['GET', 'POST'])
 def data_upload():
@@ -177,49 +188,59 @@ def data_upload():
 
         # Return to data route
         return redirect(url_for('data'))     
-    
+''' 
 
 
+'''
+Author: Ryan Swaggert
+Description: For clinicians familiar with machine learning, they can download the current dataset
+            stored in the MySQL database. The data in the MySQL database serves as a private health
+            dataset for the users of the system. The dataset enables further improvement of the 
+            accuracy of the prediction system, by allowing the authorized users to download the
+            dataset to use to train new machine learning models for the system.
+Parameters: None
+Output: Response object containing CSV file
+'''
 @app.route('/data_download', methods=['GET', 'POST'])
 def export_file():
 	try:
 		if request.method == 'POST':
 
 			# Connect to database to download entries
-            conn = mysql.connect()
-            cursor = conn.cursor()
+      conn = mysql.connect()
+      cursor = conn.cursor()
 
-            cursor.callproc('GetTrainData')
-            data = cursor.fetchall()
+      cursor.callproc('GetTrainData')
+      data = cursor.fetchall()
 
-            with open("download_file.csv", "w") as download_file:
-            	fieldnames = ['diagnosis', 'radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean',
-            		'smoothness_mean', 'compactness_mean', 'concave points_mean', 'symmetry_mean', 'fractal_dimension_mean']
-            	writer = csv.DictWriter(download_file, fieldnames=fieldnames)
+      with open("breast_cancer.csv", "w") as download_file:
+        fieldnames = ['diagnosis', 'radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean',
+          'smoothness_mean', 'compactness_mean', 'concave points_mean', 'symmetry_mean', 'fractal_dimension_mean']
+        writer = csv.DictWriter(download_file, fieldnames=fieldnames)
 
-            	# Create file
-            	writer.writeheader()
-            	for row in data:
-            		# First two row indices are user and datetime
-            		writer.writerow({'diagnosis': row[0], 'radius_mean': row[1], 'texture_mean': row[2], 
-            			'perimeter_mean': row[3], 'area_mean': row[4], 'smoothness_mean': row[5], 
-            			'compactness_mean': row[6], 'concave points_mean': row[7], 'symmetry_mean': row[8], 
-            			'fractal_dimension_mean': row[9]})
+        # Create file
+        writer.writeheader()
+        for row in data:
+          # First two row indices are user and datetime
+          writer.writerow({'diagnosis': row[0], 'radius_mean': row[1], 'texture_mean': row[2], 
+            'perimeter_mean': row[3], 'area_mean': row[4], 'smoothness_mean': row[5], 
+            'compactness_mean': row[6], 'concave points_mean': row[7], 'symmetry_mean': row[8], 
+            'fractal_dimension_mean': row[9]})
 
-            # Download file
-            return Response(writer,
-                       mimetype="text/csv",
-                       headers={"Content-Disposition":
-                                    "attachment;filename=breast_cancer.csv"})
+      # Download file
+      return Response(writer,
+        mimetype="text/csv",
+        headers={"Content-Disposition":
+          "attachment;filename=breast_cancer.csv"})
 
-    except Exception as e:
-        return render_template('error.html',error = str(e))
-    finally:
-        cursor.close() 
-        conn.close()   
+  except Exception as e:
+    return render_template('404.html',error = str(e))
+  finally:
+    cursor.close() 
+    conn.close()   
 
-        # Return to data route
-        return redirect(url_for('data'))
+    # Return to data route
+    return redirect(url_for('data'))
 
 
 
