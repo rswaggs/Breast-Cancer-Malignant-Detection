@@ -172,8 +172,8 @@ Y = breast_cancer_df['diagnosis']
 X_train, X_test, y_train, y_test = train_test_split( X, Y, test_size = 0.3, random_state = 100)
 
 # Gini index for splitting
-clf = DecisionTreeClassifier(criterion = "gini", random_state = 100,
-                              max_depth=3, min_samples_leaf=5)
+clf = DecisionTreeClassifier(criterion = "gini", splitter = "random",  max_depth = 2, max_features = 6, 
+                                    random_state = 0, class_weight = "balanced")
 
 # Train
 clf.fit(X_train, y_train)
