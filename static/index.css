@@ -26,33 +26,31 @@ body {
  }
  
 
- .profile-con{  
+.profile-con{  
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  width: 60%;
-  height: 60%;
+  height: 45vh;  
+}
+
+.inner-con {
   background-color: #008CBA;
-  
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding: 15px 0px 15px 45px;
 }
 
-/* 
-.hex3 {
-  transform: translate(120px, -85px);
+.patient-info-div {
+  color: white;
 }
 
-.hex4 {
-  transform: translate(60px, -75px);
+.search-div {
+  padding-bottom: 15px;  
 }
-.hex5 {
-  transform: translate(180px, -160px);
+
+.button-list {
+  list-style-type: none;
 }
-.hex6 {
-  transform: translate(180px, -445px);
+
+.button-list-item {
+  padding-bottom: 10px;
 }
-.hex7 {
-  transform: translate(240px, -430px);
-}  */

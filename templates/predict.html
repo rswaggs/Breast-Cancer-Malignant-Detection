@@ -1,0 +1,76 @@
+{% extends "header.html" %}
+{% block body %}
+<div class="profile-con">
+  <div class="container inner-con">
+      <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Type Of Meas.</th>
+              <th scope="col">Radius</th>
+              <th scope="col">Texture</th>
+              <th scope="col">Perimeter</th>
+              <th scope="col">Area</th>
+              <th scope="col">Smoothness</th>
+              <th scope="col">Compactness</th>
+              <th scope="col">Concavity</th>
+              <th scope="col">Concave Points</th>
+              <th scope="col">Symmetry</th>
+              <th scope="col">Fractal Dimension</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Mean</th>
+              <td>{{ tumor_data['radius_mean'] }}</td>
+              <td>{{ tumor_data['texture_mean'] }}</td>
+              <td>{{ tumor_data['perimeter_mean'] }}</td>
+              <td>{{ tumor_data['area_mean'] }}</td>
+              <td>{{ tumor_data['smoothness_mean'] }}</td>
+              <td>{{ tumor_data['compactness_mean'] }}</td>
+              <td>{{ tumor_data['concavity_mean'] }}</td>
+              <td>{{ tumor_data['concave points_mean'] }}</td>
+              <td>{{ tumor_data['symmetry_mean'] }}</td>
+              <td>{{ tumor_data['fractal_dimension_mean'] }}</td>              
+            </tr>
+            <tr>
+              <th scope="row">Standard Err</th>
+              <td>{{ tumor_data['radius_se'] }}</td>
+              <td>{{ tumor_data['texture_se'] }}</td>
+              <td>{{ tumor_data['perimeter_se'] }}</td>
+              <td>{{ tumor_data['area_se'] }}</td>
+              <td>{{ tumor_data['smoothness_se'] }}</td>
+              <td>{{ tumor_data['compactness_se'] }}</td>
+              <td>{{ tumor_data['concavity_se'] }}</td>
+              <td>{{ tumor_data['concave points_se'] }}</td>
+              <td>{{ tumor_data['symmetry_se'] }}</td>
+              <td>{{ tumor_data['fractal_dimension_se'] }}</td>              
+            </tr>
+            <tr>
+              <th scope="row">Worst</th>
+              <td>{{ tumor_data['radius_worst'] }}</td>
+              <td>{{ tumor_data['texture_worst'] }}</td>
+              <td>{{ tumor_data['perimeter_worst'] }}</td>
+              <td>{{ tumor_data['area_worst'] }}</td>
+              <td>{{ tumor_data['smoothness_worst'] }}</td>
+              <td>{{ tumor_data['compactness_worst'] }}</td>
+              <td>{{ tumor_data['concavity_worst'] }}</td>
+              <td>{{ tumor_data['concave points_worst'] }}</td>
+              <td>{{ tumor_data['symmetry_worst'] }}</td>
+              <td>{{ tumor_data['fractal_dimension_worst'] }}</td>              
+            </tr>          
+          </tbody>
+        </table>
+        <div class="row">
+          <div class="col-3">
+            Predicted Diagnosis: {{ tumor_data['predicted_diagnosis'] }}
+          </div>
+          <div class="col-6">
+            
+          </div>
+          <div class="col-3">
+            <button type="button">Generate Prediction</button>
+          </div>
+        </div>
+  </div>
+</div>
+{% endblock %}
