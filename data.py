@@ -9,6 +9,7 @@ import time
 #data_upload = Blueprint('data_upload', __name__)
 app = Flask(__name__)
 
+# For local testing
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = ''
@@ -25,6 +26,13 @@ data = cursor.fetchone()'''
 
 
 
+'''
+Author: Ryan Swaggert
+Description: Returns the page to the user, in order to upload / download data from the data table in 
+            the database. The table that stores data is comprised of datasets used for model training.
+Parameters: None
+Output: HTML file
+'''
 # Data routes
 #@data_upload.route('/data')
 @app.route('/')
@@ -32,7 +40,16 @@ data = cursor.fetchone()'''
 def data():
   return render_template('data.html')
 
-'''# Get data to display for data route
+'''
+NEEDS TO BE WORKED ON STILL
+
+Author: Ryan Swaggert
+Description: Returns data from the table in the database that saves details on changes made to the
+            data table. A table that ensures troubleshooting the data done due to tracking all changes
+            made by its users.
+Parameters: None
+Output: Data to bind with HTML from /data.
+'''
 @app.route('/getData')
 def getData():
 	try:
@@ -54,7 +71,7 @@ def getData():
         return json.dumps(notes_dict)
         
     except Exception as e:
-		return render_template('error.html', error = str(e))'''
+		return render_template('error.html', error = str(e))
 
 
 '''
@@ -92,6 +109,13 @@ def export_template_file():
     return redirect(url_for('data'))
 
 
+'''
+Author: Ryan Swaggert
+Description: If the clinician obtains new datasets containing breast cancer features and their 
+            outcomes, they can upload that dataset. The dataset will be saved to the data table
+            in the database, and upload notes will be saved to the upload table.
+Parameters: None
+Output: None, redirects to /data
 '''
 #@data_upload.route('/data_upload', methods = ['GET', 'POST'])
 @app.route('/data_upload', methods = ['GET', 'POST'])
@@ -188,7 +212,6 @@ def data_upload():
 
         # Return to data route
         return redirect(url_for('data'))     
-''' 
 
 
 '''
