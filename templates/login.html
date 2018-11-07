@@ -1,20 +1,21 @@
 {% extends "header.html" %}
 {% block body %}
 <div class="login-container">
-  <form action="post" class="form-flex">
+  <form method="post" class="form-flex">
     <div>
       LOGIN
     </div>       
     <div class="user-item">
       <label for="username">Username: </label>
-      <input type="text" name="username" value="" />
+      <input type="text" name="username" value="{{ request.form['username'] }}" />
     </div>
     <div class="pass-item">
       <label for="password">Password: </label>
-      <input type="password" name="password" value="" />
+      <input type="password" name="password" value="{{ request.form['password'] }}" />
     </div>  
     
     <button name="submit" type="submit">Login</button>
+    <!-- <input type="submit" value="Login"> -->
     <div>
       <a href="#/">or signup</a>
     </div>
