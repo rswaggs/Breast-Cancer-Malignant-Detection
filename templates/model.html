@@ -1,0 +1,186 @@
+{% extends "header.html" %}
+{% block body %}
+<div class="container">
+  <div>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Could display the model parameters on the predict route, being currently used.
+        If there's an issue, the parameters can be updated immediately. -->
+  <!-- Grab latest update value from model table -->
+
+  <div>
+    <h2>Current Model Parameters</h2>
+    <table>
+      <tr>
+        <th>Clinician</th>
+        <th>Time Updated</th> 
+        <th>Criterion</th>
+        <th>Splitter</th>
+        <th>Max depth</th>
+        <th>Min samples split</th>
+        <th>Min samples leaf</th>
+        <th>Min weight fraction leaf</th>
+        <th>Max features</th>
+        <th>Random state</th>
+        <th>Max leaf nodes</th>
+        <th>Min impurity decrease</th>
+        <th>Class weight</th>
+        <th>Presort</th>
+      </tr>
+      
+      {% for item in model_notes %}
+      <tr>
+        <td>{{item[1]}}</td>
+        <td>{{item[2]}}</td>
+        <td>{{item[3]}}</td>
+        <td>{{item[4]}}</td>
+        <td>{{item[5]}}</td>
+        <td>{{item[6]}}</td>
+        <td>{{item[7]}}</td>
+        <td>{{item[8]}}</td>
+        <td>{{item[9]}}</td>
+        <td>{{item[10]}}</td>
+        <td>{{item[11]}}</td>
+        <td>{{item[12]}}</td>
+        <td>{{item[13]}}</td>
+        <td>{{item[14]}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+    
+
+  <div>
+
+    <h1>Form Required for Update Notes when Uploading New Dataset</h1>
+    <h4>Current values are the default values for the sklearn decision tree classifier.</h4>
+    <a href="https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier">Sklearn Decision Tree Documentation</a>
+    <form class="form-horizontal" method="post" action="{{ url_for('model_update') }}">
+
+      <!-- Default value is the top option for select groups -->
+      <!-- criterion -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="criterion">Criterion:</label>
+        <div class="col-md-4">                     
+          <select name="criterion">
+            <option value="gini">Gini</option>
+            <option value="entropy">Entropy</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- splitter -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="splitter">Splitter:</label>
+        <div class="col-md-4">                     
+          <select name="splitter">
+            <option value="best">Best</option>
+            <option value="random">Random</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- max_depth -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="max_depth">Max depth:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="max_depth" value="None" required>
+        </div>
+      </div>
+
+      <!-- min_samples_split -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="min_samples_split">Min samples split:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="min_samples_split" value="2" required>
+        </div>
+      </div>
+
+      <!-- min_samples_leaf -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="min_samples_leaf">Min samples leaf:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="min_samples_leaf" value="1" required>
+        </div>
+      </div>
+
+      <!-- min_weight_fraction_leaf -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="min_weight_fraction_leaf">Min weight fraction leaf:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="min_weight_fraction_leaf" value="0.0" required>
+        </div>
+      </div>
+
+      <!-- max_features -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="max_features">Max features:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="max_features" value="None" required>
+        </div>
+      </div>
+
+      <!-- random_state -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="random_state">Random state:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="random_state" value="None" required>
+        </div>
+      </div>
+
+      <!-- max_leaf_nodes -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="max_leaf_nodes">Max leaf nodes:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="max_leaf_nodes" value="None" required>
+        </div>
+      </div>
+
+      <!-- min_impurity_decrease -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="min_impurity_decrease">Min impurity decrease:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="min_impurity_decrease" value="0.0" required>
+        </div>
+      </div>
+
+      <!-- class_weight -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="class_weight">Class weight:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="class_weight" value="None" required>
+        </div>
+      </div>
+
+      <!-- splitter -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="presort">Presort:</label>
+        <div class="col-md-4">                     
+          <select name="presort">
+            <option value="False">False</option>
+            <option value="True">True</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-md-4">
+          <button type="submit" class="btn btn-default">Update Model</button>
+        </div>
+      </div>
+
+    </form> 
+
+
+  </div>
+</div>
+{% endblock %}

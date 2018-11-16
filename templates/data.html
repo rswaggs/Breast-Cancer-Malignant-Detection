@@ -2,84 +2,82 @@
 {% block body %}
 <div class="container">
   <div>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <div>
     <h1>Download CSV</h1>
 
 
-    <a href="{{ url_for('export_template_file') }}">Get CSV file template</a>
-    <!-- <a href="{{ url_for('export_template_file') }}" class="btn btn-default">Get CSV file template</a> -->
+    <!-- Template download -->
+    <a href="{{ url_for('export_template_file') }}" class="btn btn-warning">Get CSV file template</a>
     
-    <!-- <a href="{{ url_for('export_file') }}">Download breast cancer dataset</a> -->
-    <!-- <a href="{{ url_for('export_file') }}" class="btn btn-default">Download breast cancer dataset</a> -->
+    <!-- Download dataset -->
+    <a href="{{ url_for('export_file') }}" class="btn btn-warning">Download breast cancer dataset</a>
 
-    <!-- <h1>Upload CSV</h1>
-    <form action = "{{ url_for('data_upload') }}" method = "POST" enctype = "multipart/form-data">
-        <input type = "file" name = "file" accept=".csv">
-    </form>
+    <!-- Dataset missing data note -->
+    <p>Missing/incorrect values were replaced wtih a decimal of '-1.0'.</p>
+
+
+    <fieldset>
 
     <h1>Form Required for Update Notes when Uploading New Dataset</h1>
-    <form class="form-horizontal" method="post" action="{{ url_for('data_upload') }}"> -->
+    <form class="form-horizontal" method="post" action="{{ url_for('data_upload') }}" enctype = "multipart/form-data">
 
-        <fieldset>
-
-        <!-- Form Name -->
-        <legend>Why Are You Adding to the Dataset?</legend>
-
-        <!-- Textarea -->
-        <div class="form-group">
-        <label class="col-md-4 control-label" for="txtPost">Note</label>
-            <div class="col-md-4">                     
-                <textarea class="form-control" id="txtPost" name="inputNotes"  maxlength="500" required></textarea>
-            </div>
+      <!-- Textarea -->
+      <div class="form-group">
+        <div class="col-md-4">                     
+          <input type = "file" name = "file" accept=".csv">
         </div>
+      </div>
 
-        <!-- Button -->
-        <div class="form-group">
-        <label class="col-md-4 control-label" for="singlebutton"></label>
-            <div class="col-md-4">
-                <input id="singlebutton" name="singlebutton" class="btn btn-primary" type="submit" value="Publish" />
-            </div>
+      <!-- Form Name -->
+      <legend>Why Are You Adding to the Dataset?</legend>
+
+      <!-- Textarea -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="inputNotes">Note</label>
+        <div class="col-md-4">                     
+          <textarea class="form-control" name="inputNotes"  maxlength="500" required></textarea>
         </div>
+      </div>
 
-    </fieldset>
+      <!-- Button -->
+      <div class="form-group">
+        <div class="col-md-4">
+          <button type="submit" class="btn btn-default">Upload</button>
+        </div>
+      </div>
+
     </form> 
 
+
+    </fieldset>
+
+    <table>
+      <tr>
+        <th>Clinician</th>
+        <th>Time Uploaded</th> 
+        <th>Notes</th>
+      </tr>
+      
+      {% for item in notes_data %}
+      <tr>
+        <td>{{item[1]}}</td>
+        <td>{{item[2]}}</td>
+        <td>{{item[3]}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
   </div>
-
-  <!-- Script for upload update comments -->
-  <!-- Need bootstrap and jQuery for this -->
-  <!-- <script>
-  $(function() {
-    $.ajax({
-        url: '/getData',
-        type: 'GET',
-        success: function(res) {
-            var div = $('<div>')
-                .attr('class', 'list-group')
-                .append($('<a>')
-                .attr('class', 'list-group-item active')
-                .append($('<h4>')
-                .attr('class', 'list-group-item-heading'),
-                .append($('<h5>')
-                .attr('class', 'list-group-item-heading'),
-                $('<p>')
-                .attr('class', 'list-group-item-text')));
-
-            var noteObj = JSON.parse(res);
-            var note = '';
-            
-            $.each(noteObj,function(index, value){
-              note = $(div).clone();
-              $(note).find('h4').text(value.Clinician ID);
-              $(note).find('h5').text(value.Upload time);
-              $(note).find('p').text(value.Source note);
-              $('.jumbotron').append(note);
-            });
-        },
-        error: function(error) {
-            console.log(error);
-        }
-    });
-  });
-</script> -->
 </div>
 {% endblock %}
