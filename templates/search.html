@@ -1,23 +1,18 @@
 {% extends "header.html" %}
 {% block body %}
+
+
 <div class="profile-con">
   <div class="container inner-con">
     <div class="row justify-content-center search-div">
-      <input class="col-4 " type="text" placeholder="Search for patients...">
+      <input id="patient_search" placeholder="Search for patients..." />
+      <button type="button">Search</button>
     </div>
     <div class="row">
       <div class="profile-info row col">
         <img src="https://via.placeholder.com/200" alt="Test" class="img-thumbnail col">
         <div class="patient-info-div col">
-          {% for attribute, value in patients['1'].items()  %}
-            {{ attribute }}: {{ value }}<br />
-          {% endfor%}
         </div>
-        <!-- <div >
-          Paitient #: 123456789
-          Name: ABC 123
-        </div> -->
-        
       </div>
       <div class="button-list-con d-flex justify-content-center col">
         <ul class="button-list">
@@ -29,4 +24,16 @@
     </div>
   </div>
 </div>
+<script async>
+  var names = [    
+    {% for patient in patients %}
+      "{{ patient[1:3]|join(" ") }}",
+    {% endfor %}
+  ];
+  var input = document.getElementById("patient_search");
+  new Awesomplete(input, {
+    list: names
+  });
+  input.classList.add("col-12")
+</script>
 {% endblock %}

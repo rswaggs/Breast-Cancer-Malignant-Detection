@@ -17,141 +17,19 @@ from sklearn import tree
 from sklearn.externals import joblib
 
 from flask import Flask, render_template, request, url_for, redirect, session, flash, jsonify
+from flaskext.mysql import MySQL
 
-user_dict = { 
-  '1': {
-    'username': 'ABC',
-    'password': '123'
-  },
-  '2': {
-    'username': 'DEF',
-    'password': '456'
-  }
-}
-
-patient_data = {
-'1': {
-  'first_name': 'Balduin',
-  'last_name': 'Rubinsaft',
-  'age': 58,
-  'gender': 'Male',
-  'occupation': 'Geological Engineer',
-  'last_appointment': '7/13/2018',
-  'tumor_data_id': '842302'
-},
-'2': {
-  'first_name': 'Carr',
-  'last_name': 'Sancraft',
-  'age': 49,
-  'gender': 'Male',
-  'occupation': 'Information Systems Manager',
-  'last_appointment': '7/9/2018'
-  },   
-'3': {
-  'first_name': 'Franchot',
-  'last_name': 'MacKellar',
-  'age': 61,
-  'gender': 'Male',
-  'occupation': 'Assistant Media Planner',
-  'last_appointment': '11/5/2017'
-},
-'4': {
-  'first_name': 'Vincenz',
-  'last_name': 'Flieg',
-  'age': 54,
-  'gender': 'Male',
-  'occupation': 'Dental Hygienist',
-  'last_appointment': '1/17/2018'
-}, 
-'5': {
-  'first_name': 'Phillip',
-  'last_name': 'Brandon',
-  'age': 56,
-  'gender': 'Male',
-  'occupation': 'Structural Engineer',
-  'last_appointment': '11/15/2017'
-}, 
-'6': {
-  'first_name': 'Ericha',
-  'last_name': 'Rickaby',
-  'age': 20,
-  'gender': 'Female',
-  'occupation': 'Dental Hygienist',
-  'last_appointment': '4/23/2018'
-}, 
-'7': {
-  'first_name': 'Emmye',
-  'last_name': 'Handrick',
-  'age': 27,
-  'gender': 'Female',
-  'occupation': 'Environmental Tech',
-  'last_appointment': '7/21/2018'
-}, 
-'8': {
-  'first_name': 'Dorothea',
-  'last_name': 'Manston',
-  'age': 32,
-  'gender': 'Female',
-  'occupation': 'Statistician IV',
-  'last_appointment': '1/4/2018'
-}, 
-'9': {
-  'first_name': 'Tasha',
-  'last_name': 'Danks',
-  'age': 39,
-  'gender': 'Female',
-  'occupation': 'Automation Specialist IV',
-  'last_appointment': '11/22/2017'
-}, 
-'10' : {
-  'first_name': 'Cliff',
-  'last_name': 'Wrettum',
-  'age': 33,
-  'gender': 'Male',
-  'occupation': 'Engineer III',
-  'last_appointment': '8/17/2018'
-  }
-}
-
-tumor_data = {
-  '842302' : {
-    'predicted_diagnosis' : 'N/A',
-    'actual_diagnosis' : 'M',
-    'radius_mean' : 17.99,
-    'texture_mean' : 10.38,
-    'perimeter_mean' : 122.8,
-    'area_mean' : 1001,
-    'smoothness_mean' : 0.1184, 
-    'compactness_mean' : 0.2776,
-    'concavity_mean' : 0.3001,
-    'concave points_mean' : 0.1471,
-    'symmetry_mean' : 0.2419,
-    'fractal_dimension_mean' : 0.07871, 
-    'radius_se' : 1.095,
-    'texture_se' : 0.053,
-    'perimeter_se' : 8.589,
-    'area_se' : 153.4,
-    'smoothness_se' : 0.006399,
-    'compactness_se' : 0.04904,
-    'concavity_se' : 0.05373,
-    'concave points_se' : 0.01587,
-    'symmetry_se' : 0.03003,
-    'fractal_dimension_se' : 0.006193,
-    'radius_worst' : 25.38,
-    'texture_worst' : 17.33,
-    'perimeter_worst' : 184.6,
-    'area_worst' : 2019,
-    'smoothness_worst' : 0.1622,
-    'compactness_worst' : 0.6656,
-    'concavity_worst' : 0.7119,
-    'concave points_worst' : 0.2654,
-    'symmetry_worst' : 0.4601,
-    'fractal_dimension_worst' : 0.1189
-  }
-}
 app = Flask(__name__)
 
 app.config['DEBUG'] = True
+
+# For local testing
+mysql = MySQL()
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'testtest'
+app.config['MYSQL_DATABASE_DB'] = 'CDS_breast_cancer'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+mysql.init_app(app)
 
 # Read in data
 # Change to where dataset is saved
@@ -199,15 +77,25 @@ def five_hundred_err(e):
 def redir_to_login():
   return redirect(url_for('login'))
 
+ 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
   if request.method == 'POST':
+    conn = mysql.connect()
+    cursor = conn.cursor()
+
+    cursor.callproc('GetUserData')
+    user_data = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
     username = request.form['username']
     password = request.form['password']
-
-    for user, values in user_dict.items():
-      if username == values['username']:
-        if password == values['password']:
+    
+    for users in user_data:
+      if username == users[3]:
+        if password == users[4]:
           return redirect(url_for('mainpage'))
         else:
           return render_template('login.html')
@@ -221,29 +109,15 @@ def login():
 def mainpage():
   return render_template('main.html', patients=patient_data)
 
-@app.route('/predict')
-def predictpage():  
-  return render_template('predict.html', tumor_data=tumor_data['842302'])
+@app.route('/search')
+def searchpage():
+  conn = mysql.connect()
+  cursor = conn.cursor()
 
-@app.route('/results')
-def resultspage():
-  
-  	# Load model for prediction
-    model = joblib.load('model.pkl')
+  cursor.callproc('GetPatientData')
+  patient_data = cursor.fetchall()
 
-    # OBTAIN DATA BY CSV FILE OR WEBFORM HERE
-    patient_data_1 = [[20.57, 17.77, 132.9, 1326.0, 0.08474, 0.07864, 0.0869, 0.07017, 0.1812, 0.05667]]
-    # patient_data_2 = [[17.99, 10.38, 122.8, 1001, 0.1184, 0.2776, 0.3001, 0.1471, 0.2419, 0.07871]]
-    # patient_data_3 = [[13.54, 14.36, 87.46, 566.3, 0.09779, 0.08129, 0.06664, 0.04781, 0.1885, 0.05766]]
+  cursor.close()
+  conn.close()
 
-    # Play around with notebook to get familiar with how to extract the values
-    # For value predicted
-    result = model.predict(patient_data_1)
-
-	  # For probabilities of certain classes being predicted
-    model.predict_proba(patient_data_1)
-
-    # Store features in JSON dictionary, or save in database before passing data to results page
-
-    # Show results after prediction
-    return render_template('results.html', result=result)
+  return render_template('search.html', patients=patient_data)
