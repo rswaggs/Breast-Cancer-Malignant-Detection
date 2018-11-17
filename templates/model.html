@@ -2,15 +2,9 @@
 {% block body %}
 <div class="container">
   <div>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul class=flashes>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+    {% for message in get_flashed_messages() %}
+      <div class=flash>{{ message }}</div>
+    {% endfor %}
   </div>
 
   <!-- Could display the model parameters on the predict route, being currently used.

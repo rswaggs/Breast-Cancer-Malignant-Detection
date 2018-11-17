@@ -2,15 +2,9 @@
 {% block body %}
 <div class="container">
   <div>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul class=flashes>
-        {% for message in messages %}
-          <li>{{ message }}</li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+    {% for message in get_flashed_messages() %}
+      <div class=flash>{{ message }}</div>
+    {% endfor %}
   </div>
 
   <div>
@@ -35,7 +29,7 @@
       <!-- Textarea -->
       <div class="form-group">
         <div class="col-md-4">                     
-          <input type = "file" name = "file" accept=".csv">
+          <input type = "file" name = "file" accept=".csv" required>
         </div>
       </div>
 

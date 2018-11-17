@@ -56,8 +56,7 @@ Output: HTML file
 @app.route('/')
 @app.route('/data')
 def data():
-  #return render_template('data.html')
-	try:
+  try:
 		conn = mysql.connect()
 		cursor = conn.cursor()
         
@@ -85,22 +84,16 @@ Parameters: None
 Output: None, redirects to /data
 '''
 #@data_upload.route('/data_upload', methods = ['GET', 'POST'])
-@app.route('/data_upload', methods = ['GET', 'POST'])
+@app.route('/data_upload', methods = ['POST'])
 def data_upload():
 	try:
 		if request.method == 'POST':
 			
-			# check if the post request has the file part
+			# Check if the post request has the file part
 			if 'file' not in request.files:
 				flash('No file part')
 				return redirect(url_for('data'))
 			file = request.files['file']
-
-			# if user does not select file, browser also
-			# submit a empty part without filename
-			if file.filename == '':
-				flash('No selected file')
-				return redirect(url_for('data'))
 
 			if file:
 				

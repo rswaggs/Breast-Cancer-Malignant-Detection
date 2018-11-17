@@ -61,22 +61,16 @@ def isint(x):
 
 '''
 Author: Ryan Swaggert
-Description: Returns the page to the user, in order to upload / download data from the data table in 
-            the database. The table that stores data is comprised of datasets used for model training.
-
-						Upload notes about the dataset uploads are loaded from the database to display at the 
-						bottom of the page.
+Description: Returns the page to the user, in order to update models used for breast cancer predictions.
+						The user will enter values for the decision tree classifier to be trained on.
 
 Parameters: None
-Output: HTML file
+Output: HTML file. Goes to model page.
 '''
-# Data routes
-#@data_upload.route('/data')
 @app.route('/')
 @app.route('/model')
 def model():
-  #return render_template('model.html')
-	try:
+  try:
 		conn = mysql.connect()
 		cursor = conn.cursor()
         
@@ -96,8 +90,14 @@ def model():
 		return render_template('404.html', error = str(e))
 
 
+'''
+Author: Ryan Swaggert
+Description: The user enters values for the sklearn's decision tree classifier to be trained on.
 
-@app.route('/model_update', methods = ['GET', 'POST'])
+Input: POST request of form inputs. Feature set(s) to run predictions on/
+Output: Model file used to run predictions on gets updated. HTML file, goes to model page.
+'''
+@app.route('/model_update', methods = ['POST'])
 def model_update():
 	try:
 		if request.method == 'POST':

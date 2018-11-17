@@ -1,0 +1,117 @@
+{% extends "header.html" %}
+{% block body %}
+<div class="container">
+  <div>
+
+    <h3>Multiple Prediction</h3>
+    <form class="form-horizontal" method="POST" action="{{ url_for('predict') }}" enctype = "multipart/form-data">
+
+      <div class="form-group">
+        <div class="col-md-4">                     
+          <input type = "file" name = "file" accept=".csv" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-md-4">
+          <button type="submit" class="btn btn-default">Get Algorithm Estimate</button>
+        </div>
+      </div>
+
+    </form> 
+
+    <h3>Single Prediction</h3>
+    <form class="form-horizontal" method="POST" action="{{ url_for('predict') }}">
+
+      <!-- radius_mean -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="radius_mean">Radius mean:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="radius_mean" placeholder="Number" required>
+        </div>
+      </div>
+
+      <!-- texture_mean -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="texture_mean">Texture mean:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="texture_mean" placeholder="Number" required>
+        </div>
+      </div>
+
+      <!-- perimeter_mean -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="perimeter_mean">Perimeter mean:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="perimeter_mean" placeholder="Number" required>
+        </div>
+      </div>
+
+      <!-- area_mean -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="area_mean">Area mean:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="area_mean" placeholder="Number" required>
+        </div>
+      </div>
+
+      <!-- smoothness_mean -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="smoothness_mean">Smoothness mean:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="smoothness_mean" placeholder="Number" required>
+        </div>
+      </div>
+
+      <!-- compactness_mean -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="compactness_mean">Compactness mean:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="compactness_mean" placeholder="Number" required>
+        </div>
+      </div>
+
+      <!-- concavity_mean -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="concavity_mean">Concavity mean:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="concavity_mean" placeholder="Number" required>
+        </div>
+      </div>
+
+      <!-- concave_points_mean -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="concave_points_mean">Concave points mean:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="concave_points_mean" placeholder="Number" required>
+        </div>
+      </div>
+
+      <!-- symmetry_mean -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="symmetry_mean">Symmetry mean:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="symmetry_mean" placeholder="Number" required>
+        </div>
+      </div>
+
+      <!-- fractal_dimension_mean -->
+      <div class="form-group">
+        <label class="col-md-4 control-label" for="fractal_dimension_mean">Fractal dimension mean:</label>
+        <div class="col-md-4">                     
+          <input class="form-control" name="fractal_dimension_mean" placeholder="Number" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-md-4">
+          <button type="submit" class="btn btn-default">Get Algorithm Estimate</button>
+        </div>
+      </div>
+
+    </form> 
+
+
+  </div>
+</div>
+{% endblock %}
