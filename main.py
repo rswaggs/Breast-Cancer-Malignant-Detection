@@ -225,11 +225,9 @@ def mainpage():
 def predictpage():  
   return render_template('predict.html', tumor_data=tumor_data['842302'])
 
-
 @app.route('/homepage')
 def homepage():  
   return render_template('homepage.html')
-
 
 @app.route('/results')
 def resultspage():
