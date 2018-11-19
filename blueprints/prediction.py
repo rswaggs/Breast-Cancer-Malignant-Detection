@@ -2,6 +2,7 @@ from flask import Flask, Blueprint, render_template, request, redirect, url_for,
 
 # Handle file that holds multiple feature sets to be predicted
 import csv
+import io
 
 # Import libraries to run predictions
 from sklearn.externals import joblib
@@ -14,8 +15,9 @@ from IPython.display import Image
 import pydotplus
 
 
-app = Flask(__name__)
-app.secret_key = 'ESNlY88iNGA0iKh'
+# Create Blueprint
+prediction_blueprint = Blueprint("prediction", __name__)
+
 
 
 '''
@@ -25,15 +27,14 @@ Description: Returns the page to the user where they can enter feature set(s)
 Parameters: None
 Output: HTML file
 '''
-@app.route('/')
-@app.route('/predict')
+@prediction_blueprint.route('/predict')
 def predict_page():
 	try:
-		return render_template('predict2.html')
+		return render_template('views/predict.html')
         
 	except Exception as e:
 		flash(e)
-		return render_template('404.html', error = str(e))
+		return render_template('error.html', error = str(e))
 
 
 '''
@@ -42,13 +43,13 @@ Description: Run the predictions, and then display the results of the /result ro
 Input: POST request of feature set(s) to predict for.
 Output: After successful prediction(s), redirect to /results to display results.
 '''
-@app.route('/get_prediction', methods = ['POST'])
+@prediction_blueprint.route('/get_prediction', methods = ['POST'])
 def predict():
 	try:
 		if request.method=='POST':
 			
 			# Load model for prediction
-			model = joblib.load('temporary_files/model.pkl')
+			model = joblib.load('blueprints/temporary_files/decision_tree_model.pkl')
 
 			# Check if CSV of webform
 			# Check if the post request has the file part
@@ -81,8 +82,7 @@ def predict():
 						input_data.append(one_input)
 
 				else:
-					flash("Where did you go file?")
-					return render_template('404.html',error = str(e))
+					return render_template('error.html',error = str(e))
 			
 			# Else deal with webform inputs
 			else:
@@ -98,8 +98,8 @@ def predict():
 				fractal_dimension_mean = float( request.form['fractal_dimension_mean'] )
 
 				# Input to prediction
-				input_data = [radius_mean, texture_mean, perimeter_mean, area_mean, smoothness_mean,
-							compactness_mean, concavity_mean, concave_points_mean, symmetry_mean, fractal_dimension_mean]
+				input_data = [[radius_mean, texture_mean, perimeter_mean, area_mean, smoothness_mean,
+							compactness_mean, concavity_mean, concave_points_mean, symmetry_mean, fractal_dimension_mean]]
 
 
 			# Now that we have the input array of predictions, the inputs can be run through prediction
@@ -149,15 +149,14 @@ def predict():
 			graph = pydotplus.graph_from_dot_data(dot_data)  
 
 			# Show graph
-			graph.write_png("temporary_files/trained_tree.png")
+			graph.write_png("blueprints/temporary_files/trained_tree.png")
 
 
 			# Pass prediction result to /result route and redirect
-			render_template('results2.html', pred_results=pred, prob_pred_results=new_prob_pred, pred_inputs=new_input_data, feature_importances=new_fi)
+			return render_template('views/results.html', pred_results=pred, prob_pred_results=new_prob_pred, pred_inputs=new_input_data, feature_importances=new_fi)
 
 	except Exception as e:
-		flash(e)
-		return render_template('404.html',error = str(e))
+		return render_template('error.html',error = str(e))
 
 
 '''
@@ -166,10 +165,7 @@ Description: Get the train model image, and send it to the template to be displa
 Input: GET request.
 Output: Image location sent to /results HTML template.
 '''
-@app.route('/trained_model_image')
+@prediction_blueprint.route('/trained_model_image')
 def get_trained_model_image():
-    return send_from_directory("temporary_files", "trained_tree.png")
+    return send_from_directory("blueprints/temporary_files", "trained_tree.png")
 
-
-if __name__ == '__main__':
-   app.run(debug = True)

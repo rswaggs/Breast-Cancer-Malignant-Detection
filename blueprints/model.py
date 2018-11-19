@@ -1,7 +1,11 @@
-from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash
-from flaskext.mysql import MySQL
+
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+
+# Database
+from db_extension import mysql
+
+# Handle data to run model
 import csv
-import time
 from ast import literal_eval   # String to dict, or list of dicts (for class_weights parameter)
 
 # Data manipulation
@@ -17,16 +21,10 @@ from sklearn import tree
 import os
 from sklearn.externals import joblib
 
-app = Flask(__name__)
-app.secret_key = 'ESNlY88iNGA0iKh'
 
-# For local testing
-mysql = MySQL()
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
-app.config['MYSQL_DATABASE_DB'] = 'CDS_breast_cancer'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-mysql.init_app(app)
+
+# Create Blueprint
+model_training_blueprint = Blueprint("model_training", __name__)
 
 
 
@@ -67,10 +65,9 @@ Description: Returns the page to the user, in order to update models used for br
 Parameters: None
 Output: HTML file. Goes to model page.
 '''
-@app.route('/')
-@app.route('/model')
+@model_training_blueprint.route('/model')
 def model():
-  try:
+	try:
 		conn = mysql.connect()
 		cursor = conn.cursor()
         
@@ -84,10 +81,10 @@ def model():
 		cursor.close() 
 		conn.close()
 
-		return render_template('model.html', model_notes=model_notes)
+		return render_template('views/model.html', model_notes=model_notes)
         
 	except Exception as e:
-		return render_template('404.html', error = str(e))
+		return render_template('error.html', error = str(e))
 
 
 '''
@@ -97,7 +94,7 @@ Description: The user enters values for the sklearn's decision tree classifier t
 Input: POST request of form inputs. Feature set(s) to run predictions on/
 Output: Model file used to run predictions on gets updated. HTML file, goes to model page.
 '''
-@app.route('/model_update', methods = ['POST'])
+@model_training_blueprint.route('/model_update', methods = ['POST'])
 def model_update():
 	try:
 		if request.method == 'POST':
@@ -192,16 +189,20 @@ def model_update():
 			# Connect to database to download entries
 
 			# Create directory to store temporary files
-			if not os.path.exists("temporary_files"):
-				os.makedirs("temporary_files")
+			if not os.path.exists("blueprints/temporary_files"):
+				os.makedirs("blueprints/temporary_files")
 
 			conn = mysql.connect()
 			cursor = conn.cursor()
 			
+			'''SELECT diagnosis, 
+				... ,
+				fractal_dimension_mean 
+			FROM train_data;'''
 			cursor.callproc('GetTrainData')
 			data = cursor.fetchall()
 
-			with open("temporary_files/breast_cancer.csv", "w") as dataset:
+			with open("blueprints/temporary_files/breast_cancer.csv", "w") as dataset:
 				fieldnames = ['diagnosis', 'radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean',
 					'smoothness_mean', 'compactness_mean', 'concavity_mean', 'concave points_mean', 
 					'symmetry_mean', 'fractal_dimension_mean']
@@ -219,19 +220,11 @@ def model_update():
 
 			# STEP 3
 			# Train model
-			breast_cancer_df = pd.read_csv("temporary_files/breast_cancer.csv")
+			breast_cancer_df = pd.read_csv("blueprints/temporary_files/breast_cancer.csv")
 			
-			# For testing purposes
-			'''breast_cancer_df = pd.read_csv('diagnosis_data.csv')
-			breast_cancer_df = breast_cancer_df.drop(['id', 'radius_se', 'texture_se', 'perimeter_se', 'area_se', 'smoothness_se',
-				'compactness_se', 'concavity_se', 'concave points_se', 'symmetry_se', 'fractal_dimension_se', 
-				'radius_worst', 'texture_worst', 'perimeter_worst', 'area_worst', 'smoothness_worst',
-				'compactness_worst', 'concavity_worst', 'concave points_worst', 'symmetry_worst'], axis=1)'''
-
+			# All values are used for training, since model with the above parameters is assumed to be tested
 			X = breast_cancer_df.drop('diagnosis', axis=1)  
 			Y = breast_cancer_df['diagnosis']
-
-			X_train, X_test, Y_train, Y_test = train_test_split( X, Y, test_size = 0.3, random_state = 0, stratify = Y)
 
 			# Gini index for splitting
 			clf = DecisionTreeClassifier(criterion=criterion, splitter=splitter, max_depth=max_depth,
@@ -241,12 +234,12 @@ def model_update():
 				class_weight=class_weight, presort=presort)
 
 			# Train
-			clf.fit(X_train, Y_train)
+			clf.fit(X, Y)
 
 
 			# STEP 4
 			# Save model into file for later use
-			joblib.dump(clf, 'temporary_files/decision_tree_model.pkl')
+			joblib.dump(clf, 'blueprints/temporary_files/decision_tree_model.pkl')
 
 
 			# STEP 5
@@ -271,7 +264,23 @@ def model_update():
 			#for testing *(*Y*&T&843#@)
 			_user = 32443
 
-			# Call the stored procedure
+
+			'''INSERT INTO model_update
+				(
+					clinician_id,
+  				update_time,
+  				criterion,
+  				... ,
+  				presort
+				)
+				VALUES
+				(
+					entry_clinician_id,
+  				NOW(),
+  				entry_criterion,
+  				... ,
+  				entry_presort
+				);'''
 			cursor.callproc('AddToModelUpdates',(_user, criterion, splitter, max_depth, min_samples_split,
 				min_samples_leaf, min_weight_fraction_leaf, max_features, random_state, max_leaf_nodes,
 				min_impurity_decrease, class_weight, presort))
@@ -285,15 +294,11 @@ def model_update():
 
 			# Return to data route
 			flash('Dataset successfully uploaded') 
-			return redirect(url_for('model')) 
+			return redirect(url_for('model_training.model')) 
 
 		else:
-			return render_template('404.html') # Forces redirection to this url
+			return render_template('error.html') # Forces redirection to this url
 
 	except Exception as e:
-		flash(e)
-		return render_template('404.html',error = str(e))
+		return render_template('error.html',error = str(e))
 
-
-if __name__ == '__main__':
-	app.run(debug = True)

@@ -4,16 +4,23 @@
   <div>
 
     <h3>Other stuff</h3>
-    <img src="{{ url_for('get_trained_model_image') }}"> <!-- height="42" width="42"> -->
+    <img src="{{ url_for('prediction.get_trained_model_image') }}"> <!-- height="42" width="42"> -->
 
+    <ul>
     {% for fi in feature_importances %}
-      <p>fi</p>
+      <li>{{fi}}</li>
     {% endfor %}
+    </ul>
 
     <h1>Results</h1>
     
     <table>
       <tr>
+        <th>Cancer Prediction</th> 
+
+        <th>Malignant</th>
+        <th>Benign</th>
+
         <th>Radius mean</th>
         <th>Texture mean</th> 
         <th>Perimeter mean</th>
@@ -24,11 +31,6 @@
         <th>Concave points mean</th> 
         <th>Symmetry mean</th>
         <th>Fractal dimension mean</th>
-
-        <th>Cancer Prediction</th> 
-
-        <th>Malignant</th>
-        <th>Benign</th>
       </tr>
       
       {% for prediction_results in pred_results %}

@@ -4,7 +4,7 @@
   <div>
 
     <h3>Multiple Prediction</h3>
-    <form class="form-horizontal" method="POST" action="{{ url_for('predict') }}" enctype = "multipart/form-data">
+    <form class="form-horizontal" method="POST" action="{{ url_for('prediction.predict') }}" enctype = "multipart/form-data">
 
       <div class="form-group">
         <div class="col-md-4">                     
@@ -21,7 +21,7 @@
     </form> 
 
     <h3>Single Prediction</h3>
-    <form class="form-horizontal" method="POST" action="{{ url_for('predict') }}">
+    <form class="form-horizontal" method="POST" action="{{ url_for('prediction.predict') }}">
 
       <!-- radius_mean -->
       <div class="form-group">

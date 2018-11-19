@@ -12,10 +12,10 @@
 
 
     <!-- Template download -->
-    <a href="{{ url_for('export_template_file') }}" class="btn btn-warning">Get CSV file template</a>
+    <a href="{{ url_for('data.export_template_file') }}" class="btn btn-warning">Get CSV file template</a>
     
     <!-- Download dataset -->
-    <a href="{{ url_for('export_file') }}" class="btn btn-warning">Download breast cancer dataset</a>
+    <a href="{{ url_for('data.export_file') }}" class="btn btn-warning">Download breast cancer dataset</a>
 
     <!-- Dataset missing data note -->
     <p>Missing/incorrect values were replaced wtih a decimal of '-1.0'.</p>
@@ -24,7 +24,7 @@
     <fieldset>
 
     <h1>Form Required for Update Notes when Uploading New Dataset</h1>
-    <form class="form-horizontal" method="post" action="{{ url_for('data_upload') }}" enctype = "multipart/form-data">
+    <form class="form-horizontal" method="post" action="{{ url_for('data.data_upload') }}" enctype = "multipart/form-data">
 
       <!-- Textarea -->
       <div class="form-group">
