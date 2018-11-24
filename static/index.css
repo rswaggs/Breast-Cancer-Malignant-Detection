@@ -2,6 +2,7 @@ body {
   background: url("../static/images/BG1.png");
   /* background: #5AB5D2; */
  }
+
  
  .login-container{  
    display: flex;
@@ -54,3 +55,4 @@ body {
 .button-list-item {
   padding-bottom: 10px;
 }
+
