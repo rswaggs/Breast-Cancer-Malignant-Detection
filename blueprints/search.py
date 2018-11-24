@@ -29,14 +29,14 @@ def searchpage():
     conn.close()
 
     if not searched_patient_data:
-      return render_template('search.html', patient=None, patients=patient_data)
+      return render_template('views/search.html', patient=None, patients=patient_data)
 
     else:
-      return render_template('search.html', patient=searched_patient_data, patients=patient_data)
+      return render_template('views/search.html', patient=searched_patient_data, patients=patient_data)
     
-    return render_template('404.html')
+    return render_template('views/search.html', patient=None, patients=patient_data)
 
   else:
     cursor.close()
     conn.close()
-    return render_template('search.html', patient=None, patients=patient_data)
+    return render_template('views/search.html', patient=None, patients=patient_data)

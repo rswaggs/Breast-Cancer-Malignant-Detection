@@ -30,12 +30,12 @@ def login():
         if password == users[4]:
           session['logged_in'] = True
           session['username'] = username
-          return redirect(url_for('search_blueprint.searchpage'))
+          return redirect(url_for('search.searchpage'))
 
         else:
-          return render_template('login.html')
+          return render_template('views/login.html')
 
-      return render_template('login.html')
+      return render_template('views/login.html')
 
   else:
-    return render_template('login.html')
+    return render_template('views/login.html')
