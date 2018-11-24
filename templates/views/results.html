@@ -1,65 +1,117 @@
 {% extends "header.html" %}
 {% block body %}
 <div class="container">
-  <div>
+  <br></br>
+  
+  <div class="row bg-primary">
 
-    <h3>Other stuff</h3>
-    <img src="{{ url_for('prediction.get_trained_model_image') }}"> <!-- height="42" width="42"> -->
+    <h3>Decision Tree Plot</h3>
+    <img src="{{ url_for('prediction.get_trained_model_image') }}" height="700" width="100%">
 
-    <ul>
-    {% for fi in feature_importances %}
-      <li>{{fi}}</li>
-    {% endfor %}
-    </ul>
+  </div>
+  <br></br>
+  <div class="row bg-primary">
+
+    <table class="table table-sm table-striped table-bordered">
+      <thead>
+        <tr class="table-info">
+          <th>Radius mean</th>
+          <th>Texture mean</th> 
+          <th>Perimeter mean</th>
+          <th>Area mean</th>
+          <th>Smoothness mean</th>
+        </tr>
+        <tr>
+          <th>Compactness mean</th>
+          <th>Concavity mean</th>
+          <th>Concave points mean</th> 
+          <th>Symmetry mean</th>
+          <th>Fractal dimension mean</th>
+        </tr>
+      </thead>
+      
+      <tbody>
+        <tr class="table-info">
+          <td>{{feature_importances[0]}}</td>
+          <td>{{feature_importances[1]}}</td>
+          <td>{{feature_importances[2]}}</td>
+          <td>{{feature_importances[3]}}</td>
+          <td>{{feature_importances[4]}}</td>
+        </tr>
+        <tr>
+          <td>{{feature_importances[5]}}</td>
+          <td>{{feature_importances[6]}}</td>
+          <td>{{feature_importances[7]}}</td>
+          <td>{{feature_importances[8]}}</td>
+          <td>{{feature_importances[9]}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+  <br></br>
+  <div class="row bg-primary">
 
     <h1>Results</h1>
     
-    <table>
-      <tr>
-        <th>Cancer Prediction</th> 
+    <table class="table table-sm table-striped table-bordered">
+      <thead>
+        <tr class="table-info">
+          <th>Cancer Prediction</th> 
 
-        <th>Malignant</th>
-        <th>Benign</th>
+          <th>Malignant</th>
+          <th>Benign</th>
 
-        <th>Radius mean</th>
-        <th>Texture mean</th> 
-        <th>Perimeter mean</th>
-        <th>Area mean</th>
-        <th>Time Uploaded</th> 
-        <th>Smoothness mean</th>
-        <th>Compactness mean</th>
-        <th>Concave points mean</th> 
-        <th>Symmetry mean</th>
-        <th>Fractal dimension mean</th>
-      </tr>
+        </tr>
+        <tr>
+
+          <th>Radius mean</th>
+          <th>Texture mean</th> 
+          <th>Perimeter mean</th>
+          <th>Area mean</th>
+          <th>Time Uploaded</th> 
+          <th>Smoothness mean</th>
+          <th>Compactness mean</th>
+          <th>Concave points mean</th> 
+          <th>Symmetry mean</th>
+          <th>Fractal dimension mean</th>
+        </tr>
+      </thead>
       
-      {% for prediction_results in pred_results %}
-      {% for prediction_probailities in prob_pred_results %}
-      {% for prediction_inputs in pred_inputs %}
-      <tr>
-        <td>{{prediction_results[1]}}</td>
+      <tbody>
+        {% for prediction_results in pred_results %}
+        {% for prediction_probailities in prob_pred_results %}
+        {% for prediction_inputs in pred_inputs %}
+        <tr class="table-info">
+          <td>{{prediction_results[0]}}</td>
 
-        <td>{{prediction_probailities[1]}}</td>
-        <td>{{prediction_probailities[2]}}</td>
+          <td>{{prediction_probailities[0]}}</td>
+          <td>{{prediction_probailities[1]}}</td>
 
-        <td>{{prediction_inputs[1]}}</td>
-        <td>{{prediction_inputs[2]}}</td>
-        <td>{{prediction_inputs[3]}}</td>
-        <td>{{prediction_inputs[4]}}</td>
-        <td>{{prediction_inputs[5]}}</td>
-        <td>{{prediction_inputs[6]}}</td>
-        <td>{{prediction_inputs[7]}}</td>
-        <td>{{prediction_inputs[8]}}</td>
-        <td>{{prediction_inputs[9]}}</td>
-        <td>{{prediction_inputs[10]}}</td>
-      </tr>
-      {% endfor %}
-      {% endfor %}
-      {% endfor %}
+        </tr>
+        <tr>
 
+          <td>{{prediction_inputs[0]}}</td>
+          <td>{{prediction_inputs[1]}}</td>
+          <td>{{prediction_inputs[2]}}</td>
+          <td>{{prediction_inputs[3]}}</td>
+          <td>{{prediction_inputs[4]}}</td>
+          <td>{{prediction_inputs[5]}}</td>
+          <td>{{prediction_inputs[6]}}</td>
+          <td>{{prediction_inputs[7]}}</td>
+          <td>{{prediction_inputs[8]}}</td>
+          <td>{{prediction_inputs[9]}}</td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+        {% endfor %}
+      </tbody>
     </table>
 
-
+  
   </div>
+
+  <br></br>
+  
 </div>
 {% endblock %}

@@ -1,77 +1,85 @@
 {% extends "header.html" %}
 {% block body %}
 <div class="container">
-  <div>
+
+  <br></br>
+
+  <div class="row bg-secondary">
     {% for message in get_flashed_messages() %}
-      <div class=flash>{{ message }}</div>
+      <div class="flash col-8 mx-auto w-100">{{ message }}</div>
     {% endfor %}
   </div>
 
-  <div>
-    <h1>Download CSV</h1>
+  <br></br>
+
+  <div class="row bg-primary">
+
+    <h1 class="col-8 mx-auto w-100">Download CSV</h1>
 
 
     <!-- Template download -->
-    <a href="{{ url_for('data.export_template_file') }}" class="btn btn-warning">Get CSV file template</a>
+    <a  class="col-6 mx-auto w-100 btn btn-warning" href="{{ url_for('data.export_template_file') }}">Get CSV file template</a>
     
     <!-- Download dataset -->
-    <a href="{{ url_for('data.export_file') }}" class="btn btn-warning">Download breast cancer dataset</a>
+    <a  class="col-6 mx-auto w-100 btn btn-warning" href="{{ url_for('data.export_file') }}">Download breast cancer dataset</a>
 
     <!-- Dataset missing data note -->
-    <p>Missing/incorrect values were replaced wtih a decimal of '-1.0'.</p>
+    <p class="col-8 mx-auto w-100">Missing/incorrect values will be replaced wtih a decimal of '-1.0' when uploaded.</p>
 
 
-    <fieldset>
+  </div>
+  <br></br>
+  <div class="row bg-primary">
 
-    <h1>Form Required for Update Notes when Uploading New Dataset</h1>
-    <form class="form-horizontal" method="post" action="{{ url_for('data.data_upload') }}" enctype = "multipart/form-data">
+    <h1 class="col-8 mx-auto w-100">Upload New Dataset</h1>
+
+    <form class="col-12" method="post" action="{{ url_for('data.data_upload') }}" enctype = "multipart/form-data">
 
       <!-- Textarea -->
-      <div class="form-group">
-        <div class="col-md-4">                     
-          <input type = "file" name = "file" accept=".csv" required>
-        </div>
+      <div class="form-group col-8 mx-auto w-100">
+        <input type="file" name="file" accept=".csv" required>
       </div>
 
-      <!-- Form Name -->
-      <legend>Why Are You Adding to the Dataset?</legend>
-
       <!-- Textarea -->
-      <div class="form-group">
-        <label class="col-md-4 control-label" for="inputNotes">Note</label>
-        <div class="col-md-4">                     
-          <textarea class="form-control" name="inputNotes"  maxlength="500" required></textarea>
-        </div>
+      <div class="form-group col-8 mx-auto w-100">
+        <label class="control-label" for="inputNotes">Why Are You Adding to the Dataset?</label>
+        <textarea class="form-control" name="inputNotes"  maxlength="500" required></textarea>
       </div>
 
       <!-- Button -->
-      <div class="form-group">
-        <div class="col-md-4">
-          <button type="submit" class="btn btn-default">Upload</button>
-        </div>
+      <div class="form-group col-8 mx-auto w-100">
+        <button type="submit" class="btn btn-default">Upload</button>
       </div>
 
     </form> 
 
 
-    </fieldset>
+  </div>
+  <br></br>
+  <div class="row bg-primary">
 
-    <table>
-      <tr>
-        <th>Clinician</th>
-        <th>Time Uploaded</th> 
-        <th>Notes</th>
-      </tr>
+
+    <table class="table table-sm table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>Clinician</th>
+          <th>Time Uploaded</th> 
+          <th>Notes</th>
+        </tr>
+      </thead>
       
-      {% for item in notes_data %}
-      <tr>
-        <td>{{item[1]}}</td>
-        <td>{{item[2]}}</td>
-        <td>{{item[3]}}</td>
-      </tr>
-      {% endfor %}
+      <tbody>
+        {% for item in notes_data %}
+        <tr>
+          <td>{{item[1]}}</td>
+          <td>{{item[2]}}</td>
+          <td>{{item[3]}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
 
   </div>
+
 </div>
 {% endblock %}
