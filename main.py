@@ -23,6 +23,8 @@ app = Flask(__name__)
 
 app.config['DEBUG'] = True
 
+app.secret_key = '\x96jF\xe7\xde\xe9 ]\x12C\x88\xaf\xf7W\xd5\xfdf\x87\xb1\x88xq\xff\x0f\xa3\x82\xaf=\xf6\xbe\xcd\x90\xcd\x92\x8c\xf4i\xa7\x7f\x8c'
+
 # For local testing
 mysql = MySQL()
 app.config['MYSQL_DATABASE_USER'] = 'root'
@@ -77,7 +79,19 @@ def five_hundred_err(e):
 def redir_to_login():
   return redirect(url_for('login'))
 
- 
+
+def login_req(f):
+  @wraps(f)
+  def wrap(*args, **kwargs):
+    if 'logged_in' in session:
+      return f(*args, **kwargs)
+
+    else:
+      return redirect(url_for('login'))
+
+  return wrap
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
   if request.method == 'POST':
@@ -96,7 +110,10 @@ def login():
     for users in user_data:
       if username == users[3]:
         if password == users[4]:
-          return redirect(url_for('mainpage'))
+          session['logged_in'] = True
+          session['username'] = username
+          return redirect(url_for('searchpage'))
+
         else:
           return render_template('login.html')
 
@@ -109,7 +126,8 @@ def login():
 def mainpage():
   return render_template('main.html', patients=patient_data)
 
-@app.route('/search')
+@app.route('/search', methods=['GET', 'POST'])
+@login_req
 def searchpage():
   conn = mysql.connect()
   cursor = conn.cursor()
@@ -117,7 +135,28 @@ def searchpage():
   cursor.callproc('GetPatientData')
   patient_data = cursor.fetchall()
 
-  cursor.close()
-  conn.close()
+  if request.method == "POST":
 
-  return render_template('search.html', patients=patient_data)
+    patient = request.form['patient']
+
+    patient_fname = str(patient).split()[0]
+    patient_lname = str(patient).split()[1]
+
+    cursor.callproc('GetOnePatient', (patient_fname, patient_lname))
+    searched_patient_data = cursor.fetchall()[0]
+
+    cursor.close()
+    conn.close()
+
+    if not searched_patient_data:
+      return render_template('search.html', patient=None, patients=patient_data)
+
+    else:
+      return render_template('search.html', patient=searched_patient_data, patients=patient_data)
+    
+    return render_template('404.html')
+
+  else:
+    cursor.close()
+    conn.close()
+    return render_template('search.html', patient=None, patients=patient_data)
