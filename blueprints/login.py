@@ -8,7 +8,7 @@ login_blueprint = Blueprint("login", __name__)
 
 @login_blueprint.route('/')
 def redir_to_login():
-  return redirect(url_for('login_blueprint.login'))
+  return redirect(url_for('login.login'))
 
 @login_blueprint.route('/login', methods=['GET', 'POST'])
 def login():

@@ -15,7 +15,7 @@ app.secret_key = 'ESNlY88iNGA0iKh'
 
 # Database
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
+app.config['MYSQL_DATABASE_PASSWORD'] = 'testtest'
 app.config['MYSQL_DATABASE_DB'] = 'CDS_breast_cancer'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
