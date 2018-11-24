@@ -5,7 +5,7 @@
 <div class="profile-con">
   <div class="container inner-con">
     <div class="row justify-content-center search-div">
-      <form action="{{ url_for( 'searchpage' )}}" method="post">
+      <form action="{{ url_for( 'search.searchpage' )}}" method="post">
         <input type="text" id="patient_search" name="patient" placeholder="Search for patients..." value="{{ request.form['patient'] }}" />
         <button type="submit">Search</button>
       </form>
@@ -28,7 +28,7 @@
       </div>
       <div class="button-list-con d-flex justify-content-center col">
         <ul class="button-list">
-          <li class="button-list-item"><a href="{{ url_for( 'searchpage' )}}"><button type="button">Predict</button></a></li> 
+          <li class="button-list-item"><a href="{{ url_for( 'search.searchpage' )}}"><button type="button">Predict</button></a></li> 
         </ul>
       </div>
     </div>
