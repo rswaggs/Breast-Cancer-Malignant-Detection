@@ -85,8 +85,11 @@ def data_upload():
 
 			if file:
 				
-				#for testing *(*Y*&T&843#@)
-				_user = 32443
+				# Get username of current user
+				if 'username' in session:
+					_user = session['username']
+				else:
+					raise ValueError("Username missing. How are you logged in?!")
         		
 				# Time database rows are started to be updated
 				_current_time = time.strftime('%Y-%m-%d %H:%M:%S')

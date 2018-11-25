@@ -31,7 +31,6 @@ app.register_blueprint(prediction_blueprint)
 '''
 APPLICATION
 '''
-@app.route('/')
 @app.route('/main')
 def main_page():
 	try:

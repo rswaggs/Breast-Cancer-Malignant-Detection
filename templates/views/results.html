@@ -6,7 +6,9 @@
   <div class="row bg-primary">
 
     <h3>Decision Tree Plot</h3>
-    <img src="{{ url_for('prediction.get_trained_model_image') }}" height="700" width="100%">
+    <img src="{{ url_for('prediction.get_trained_model_image') }}" height="100%" width="100%">
+
+    <a href="{{ url_for('prediction.get_decision_tree_dot_file') }}" class="btn btn-warning" role="button">Download dot file</a>
 
   </div>
   <br></br>
