@@ -16,7 +16,7 @@ app.secret_key = 'ESNlY88iNGA0iKh'
 # Database
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = ''
-app.config['MYSQL_DATABASE_DB'] = 'CDS_breast_cancer'
+app.config['MYSQL_DATABASE_DB'] = 'cds_breast_cancer'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
 mysql.init_app(app)
@@ -44,4 +44,4 @@ def main_page():
 RUN
 '''
 if __name__ == "__main__":
-	app.run(debug=True)
+	app.run()
