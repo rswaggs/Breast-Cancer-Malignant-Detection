@@ -142,7 +142,7 @@ def predict():
 
 			# Enter the new predictions into the database
 			for i in range(len(pred)):
-				cursor.callproc('AddToPredictions',(patient_id, pred[i], new_prob_pred[0], new_prob_pred[1], 
+				cursor.callproc('AddToPredict',(patient_id, pred[i], new_prob_pred[0], new_prob_pred[1], 
 				new_input_data[i][0], new_input_data[i][1], new_input_data[i][2], new_input_data[i][3], 
 				new_input_data[i][4], new_input_data[i][5], new_input_data[i][6], new_input_data[i][7], 
 				new_input_data[i][8], new_input_data[i][9]))
@@ -223,7 +223,7 @@ def export_template_file():
 		
 		# Return to data route
 		flash('Template file successfully downloaded')
-		return redirect(url_for('data.data'))
+		return redirect(url_for('prediction.predict_page'))
 
 
 '''
