@@ -81,14 +81,15 @@
       </thead>
       
       <tbody>
+        <!-- pred_results should be 1D array -->
         {% for prediction_results in pred_results %}
-        {% for prediction_probailities in prob_pred_results %}
+        {% for prediction_probabilities in prob_pred_results %}
         {% for prediction_inputs in pred_inputs %}
         <tr class="table-info">
-          <td>{{prediction_results[0]}}</td>
+          <td>{{prediction_results}}</td>
 
-          <td>{{prediction_probailities[0]}}</td>
-          <td>{{prediction_probailities[1]}}</td>
+          <td>{{prediction_probabilities[0]}}</td>
+          <td>{{prediction_probabilities[1]}}</td>
 
         </tr>
         <tr>

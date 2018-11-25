@@ -9,6 +9,9 @@
       <h3>Multiple Prediction</h3>
     </div>
 
+    <!-- Template download -->
+    <a class="col-8 mx-auto w-100 btn btn-warning" href="{{ url_for('prediction.export_template_file') }}">Get CSV file template</a>
+
     <form class="col-12" method="POST" action="{{ url_for('prediction.predict') }}" enctype = "multipart/form-data">
 
       <div class="form-group mx-auto">
@@ -30,6 +33,12 @@
     </div>
       
     <form class="col-12" method="POST" action="{{ url_for('prediction.predict') }}">
+
+      <!-- patient_id -->
+      <div class="form-group col-8 mx-auto w-100">
+        <label class="control-label" for="patient_id">Patient ID:</label>
+        <input class="form-control" name="patient_id" placeholder="Number" required>
+      </div>
 
       <!-- radius_mean -->
       <div class="form-group col-8 mx-auto w-100">

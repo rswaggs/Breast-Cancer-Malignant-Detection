@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, render_template, request, redirect, url_for, Response, flash
+from flask import Blueprint, render_template, request, redirect, url_for, Response, flash
 
 # Database
 from db_extension import mysql
