@@ -141,7 +141,7 @@ def predict():
 				feature_names=['radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean', 
 					'smoothness_mean', 'compactness_mean', 'concavity_mean', 'concave points_mean', 
 					'symmetry_mean', 'fractal_dimension_mean'],
-				class_names=['Malignant (spreading)', 'Benign (not spreading)'],
+				class_names=['Malignant', 'Benign'],
 				filled=True, 
 				rounded=True)
 
@@ -150,6 +150,11 @@ def predict():
 
 			# Show graph
 			graph.write_png("blueprints/temporary_files/trained_tree.png")
+
+
+			# Create dot file to download from
+			with open("blueprints/temporary_files/decision_tree.dot", "w") as dot_file: 
+				dot_file.write(dot_data) 
 
 
 			# Pass prediction result to /result route and redirect
@@ -167,5 +172,22 @@ Output: Image location sent to /results HTML template.
 '''
 @prediction_blueprint.route('/trained_model_image')
 def get_trained_model_image():
-    return send_from_directory("blueprints/temporary_files", "trained_tree.png")
+	try:
+		return send_from_directory("blueprints/temporary_files", "trained_tree.png")
+	except:
+		return render_template('error.html',error = str(e))
+
+
+'''
+Author: Ryan Swaggert
+Description: Get the dot file of the decision tree, for downloading.
+Input: GET request.
+Output: dot file from temporary files location.
+'''
+@prediction_blueprint.route('/decision_tree_dot_file')
+def get_decision_tree_dot_file():
+	try:
+		return send_from_directory("blueprints/temporary_files", "decision_tree.dot")
+	except:
+		return render_template('error.html',error = str(e))
 

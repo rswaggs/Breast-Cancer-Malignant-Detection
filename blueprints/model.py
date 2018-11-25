@@ -34,12 +34,12 @@ Parameters: String object
 Output: Boolean
 '''
 def isfloat(x):
-    try:
-        a = float(x)
-    except ValueError:
-        return False
-    else:
-        return True
+	try:
+		a = float(x)
+	except ValueError:
+		return False
+	else:
+		return True
 
 '''
 Description: Checks if string can be converted to a int.
@@ -47,12 +47,12 @@ Parameters: String object
 Output: Boolean
 '''
 def isint(x):
-    try:
-        a = int(x)
-    except ValueError:
-        return False
-    else:
-        return True
+	try:
+		a = int(x)
+	except ValueError:
+		return False
+	else:
+		return True
 
 
 
@@ -260,8 +260,11 @@ def model_update():
 			presort = str(presort)
 
 
-			#for testing *(*Y*&T&843#@)
-			_user = 32443
+			# Get username of current user
+			if 'username' in session:
+				_user = session['username']
+			else:
+				raise ValueError("Username missing. How are you logged in?!")
 
 
 			'''INSERT INTO model_update
