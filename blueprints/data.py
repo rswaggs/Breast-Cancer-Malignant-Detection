@@ -319,7 +319,7 @@ def export_file():
 			# 	mimetype="text/csv",
       # 				headers={"Content-Disposition":
       #   			"attachment;filename=breast_cancer.csv"})
-			return send_from_directory("blueprints/temporary_files", "breast_cancer.csv")
+			return send_from_directory("blueprints/temporary_files", "breast_cancer.csv", as_attachment=True)
 
 	except Exception as e:
 		return render_template('error.html',error = str(e))
