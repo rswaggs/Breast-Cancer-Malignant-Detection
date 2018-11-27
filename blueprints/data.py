@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, Response, flash
+from flask import Blueprint, render_template, request, redirect, url_for, Response, flash, send_from_directory
 
 # Database
 from db_extension import mysql
@@ -295,7 +295,7 @@ def export_file():
 		cursor.callproc('GetTrainData')
 		data = cursor.fetchall()
 
-		with open("breast_cancer.csv", "w") as download_file:
+		with open("blueprints/temporary_files/breast_cancer.csv", "w") as download_file:
 			fieldnames = ['diagnosis', 'radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean',
 				'smoothness_mean', 'compactness_mean', 'concavity_mean', 'concave points_mean', 
 				'symmetry_mean', 'fractal_dimension_mean']
@@ -315,10 +315,11 @@ def export_file():
 			conn.close()
 
     			# Download file
-			return Response(download_file,
-				mimetype="text/csv",
-      				headers={"Content-Disposition":
-        			"attachment;filename=breast_cancer.csv"})
+			# return Response(download_file,
+			# 	mimetype="text/csv",
+      # 				headers={"Content-Disposition":
+      #   			"attachment;filename=breast_cancer.csv"})
+			return send_from_directory("blueprints/temporary_files", "breast_cancer.csv")
 
 	except Exception as e:
 		return render_template('error.html',error = str(e))
