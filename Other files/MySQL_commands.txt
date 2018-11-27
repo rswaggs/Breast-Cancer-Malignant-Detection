@@ -1,36 +1,32 @@
-CREATE TABLE train_data (
-  id BIGINT AUTO_INCREMENT,
-  upload_notes_id INT NOT NULL,
-  diagnosis CHAR(1) NOT NULL,
-  radius_mean DECIMAL(11,5),
-  texture_mean DECIMAL(11,5),
-  perimeter_mean DECIMAL(11,5),
-  area_mean DECIMAL(11,5),
-  smoothness_mean DECIMAL(11,5),
-  compactness_mean DECIMAL(11,5),
-  concavity_mean DECIMAL(11,5),
-  concave_points_mean DECIMAL(11,5),
-  symmetry_mean DECIMAL(11,5),
-  fractal_dimension_mean DECIMAL(11,5),
-  PRIMARY KEY (id),
-  FOREIGN KEY (upload_notes_id) REFERENCES data_upload_notes(id)
+##############
+### TABLES ###
+##############
+===============================================
+
+CREATE TABLE `clinician_data` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(45) DEFAULT NULL,
+  `last_name` varchar(45) DEFAULT NULL,
+  `username` varchar(45) DEFAULT NULL,
+  `pin` varchar(4) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
 );
 
-------------------------------
+===============================================
 
 CREATE TABLE `data_upload_notes` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `clinician_id` INT NOT NULL,     	  (Foreign key when other table is available)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `clinician_id` int(11) NOT NULL,
   `upload_time` datetime NOT NULL,
   `source_notes` varchar(500) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
-------------------------------
+===============================================
 
 CREATE TABLE `model_update` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `clinician_id` INT NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `clinician_id` int(11) NOT NULL,
   `update_time` datetime NOT NULL,
   `criterion` varchar(7) NOT NULL,
   `splitter` varchar(6) NOT NULL,
@@ -43,91 +39,100 @@ CREATE TABLE `model_update` (
   `max_leaf_nodes` varchar(4) NOT NULL,
   `min_impurity_decrease` varchar(10) NOT NULL,
   `class_weight` varchar(500) NOT NULL,
-  `presort` varchar(5) NOT NULL
+  `presort` varchar(5) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
-=============================
+===============================================
 
-DELIMITER $$
-CREATE PROCEDURE AddToTrainData(
-	IN entry_upload_notes_id INT,
-  	IN entry_diagnosis CHAR(1),
-  	IN entry_radius_mean DECIMAL(11,5),
-  	IN entry_texture_mean DECIMAL(11,5),
-  	IN entry_perimeter_mean DECIMAL(11,5),
-  	IN entry_area_mean DECIMAL(11,5),
-  	IN entry_smoothness_mean DECIMAL(11,5),
-  	IN entry_compactness_mean DECIMAL(11,5),
-  	IN entry_concavity_mean DECIMAL(11,5),
-  	IN entry_concave_points_mean DECIMAL(11,5),
-  	IN entry_symmetry_mean DECIMAL(11,5),
-  	IN entry_fractal_dimension_mean DECIMAL(11,5)
-)
-	BEGIN
-		INSERT INTO train_data
-		(
-			upload_notes_id,
-  			diagnosis,
-  			radius_mean,
-  			texture_mean,
-  			perimeter_mean,
-  			area_mean,
-  			smoothness_mean,
-  			compactness_mean,
-  			concavity_mean,
-  			concave_points_mean,
-  			symmetry_mean,
-  			fractal_dimension_mean
-		)
-		VALUES
-		(
-			entry_upload_notes_id,
-  			entry_diagnosis,
-  			entry_radius_mean,
-  			entry_texture_mean,
-  			entry_perimeter_mean,
-  			entry_area_mean,
-  			entry_smoothness_mean,
-  			entry_compactness_mean,
-  			entry_concavity_mean,
-  			entry_concave_points_mean,
-  			entry_symmetry_mean,
-  			entry_fractal_dimension_mean
-		);
+CREATE TABLE `patient_data` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(45) DEFAULT NULL,
+  `last_name` varchar(45) DEFAULT NULL,
+  `age` int(11) DEFAULT NULL,
+  `gender` varchar(10) DEFAULT NULL,
+  `occupation` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
 
-	END $$
+===============================================
+
+CREATE TABLE `predict` (
+  `tumor_id` int(11) NOT NULL AUTO_INCREMENT,
+  `patient_id` int(11) NOT NULL,
+  `pred_diagnosis` char(1) NOT NULL,
+  `probM` varchar(4) NOT NULL,
+  `probB` varchar(4) NOT NULL,
+  `radius_mean` varchar(6) NOT NULL,
+  `texture_mean` varchar(6) NOT NULL,
+  `perimeter_mean` varchar(6) NOT NULL,
+  `area_mean` varchar(6) NOT NULL,
+  `smoothness_mean` varchar(6) NOT NULL,
+  `compactness_mean` varchar(6) NOT NULL,
+  `concavity_mean` varchar(6) NOT NULL,
+  `concave_points_mean` varchar(6) NOT NULL,
+  `symmetry_mean` varchar(6) NOT NULL,
+  `fractal_dimension_mean` varchar(6) NOT NULL,
+  PRIMARY KEY (`tumor_id`),
+  KEY `patient_id` (`patient_id`),
+  CONSTRAINT `predict_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_data` (`id`)
+);
+
+===============================================
+
+CREATE TABLE `train_data` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `upload_notes_id` int(11) NOT NULL,
+  `diagnosis` char(1) NOT NULL,
+  `radius_mean` decimal(11,5) DEFAULT NULL,
+  `texture_mean` decimal(11,5) DEFAULT NULL,
+  `perimeter_mean` decimal(11,5) DEFAULT NULL,
+  `area_mean` decimal(11,5) DEFAULT NULL,
+  `smoothness_mean` decimal(11,5) DEFAULT NULL,
+  `compactness_mean` decimal(11,5) DEFAULT NULL,
+  `concavity_mean` decimal(11,5) DEFAULT NULL,
+  `concave_points_mean` decimal(11,5) DEFAULT NULL,
+  `symmetry_mean` decimal(11,5) DEFAULT NULL,
+  `fractal_dimension_mean` decimal(11,5) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `upload_notes_id` (`upload_notes_id`),
+  CONSTRAINT `train_data_ibfk_1` FOREIGN KEY (`upload_notes_id`) REFERENCES `data_upload_notes` (`id`)
+);
+
+===============================================
+
+
+
+#########################
+### STORED PROCEDURES ###
+#########################
+
+### For clinician_data table ###
+===============================================
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetUserData`()
+BEGIN
+	SELECT * 
+	FROM clinician_data;
+END;;
 DELIMITER ;
 
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-DELIMITER $$
-CREATE PROCEDURE GetTrainData()
-	BEGIN
-		SELECT 	diagnosis,
-  			radius_mean,
-  			texture_mean,
-  			perimeter_mean,
-  			area_mean,
-  			smoothness_mean,
-  			compactness_mean,
-  			concavity_mean,
-  			concave_points_mean,
-  			symmetry_mean,
-  			fractal_dimension_mean 
-		FROM train_data;
-	END $$
-DELIMITER ;
 
-------------------------------
 
-DELIMITER $$
-CREATE PROCEDURE AddToUploadNotes(
+
+### For data_upload_notes table ###
+===============================================
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddToUploadNotes`(
 	IN entry_clinician_id INT,
   	IN entry_upload_time datetime,
   	IN entry_source_notes varchar(500)
 )
-	BEGIN
+BEGIN
 		INSERT INTO data_upload_notes
 		(
 			clinician_id,
@@ -141,47 +146,39 @@ CREATE PROCEDURE AddToUploadNotes(
   			entry_source_notes
 		);
 
-	END $$
+	END;;
 DELIMITER ;
 
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## Grabs the last inserted row ID for the database. Will grab the update notes ID ##immediately after the row is inserted
-DELIMITER $$
-CREATE PROCEDURE GetUploadNotesMostRecentID()
-	BEGIN
-		SELECT LAST_INSERT_ID();
-	END $$
-DELIMITER ;
-
-------------------------------
-
-DELIMITER $$
-CREATE PROCEDURE GetUploadNotes()
-	BEGIN
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetUploadNotes`()
+BEGIN
 		SELECT * FROM data_upload_notes
 		ORDER BY upload_time DESC
 		LIMIT 10;
-	END $$
+	END;;
 DELIMITER ;
 
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## Get last set of model parameters used
-DELIMITER $$
-CREATE PROCEDURE GetLatestModelParameters()
-	BEGIN
-		SELECT * FROM model_update
-		ORDER BY update_time DESC
-		LIMIT 1;
-	END $$
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetUploadNotesMostRecentID`()
+BEGIN
+		SELECT LAST_INSERT_ID();
+	END;;
 DELIMITER ;
 
-------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-## AddToModelUpdates
-DELIMITER $$
-CREATE PROCEDURE AddToModelUpdates(
+
+
+
+### For model_update table ###
+===============================================
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddToModelUpdates`(
 	IN entry_clinician_id INT,
   	IN entry_criterion varchar(7),
   	IN entry_splitter varchar(6),
@@ -196,7 +193,7 @@ CREATE PROCEDURE AddToModelUpdates(
   	IN entry_class_weight varchar(500),
   	IN entry_presort varchar(5)
 )
-	BEGIN
+BEGIN
 		INSERT INTO model_update
 		(
 			clinician_id,
@@ -232,6 +229,186 @@ CREATE PROCEDURE AddToModelUpdates(
   			entry_presort
 		);
 
-	END $$
+	END;;
 DELIMITER ;
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetLatestModelParameters`()
+BEGIN
+		SELECT * FROM model_update
+		ORDER BY update_time DESC
+		LIMIT 1;
+	END;;
+DELIMITER ;
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+### For patient_data table ###
+===============================================
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetOnePatient`(IN fname VARCHAR(45), IN lname VARCHAR(45))
+BEGIN
+	SELECT * FROM patient_data 
+	WHERE first_name = fname
+    AND last_name = lname;
+END;;
+DELIMITER ;
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetPatientData`()
+BEGIN
+	SELECT * FROM patient_data;
+END;;
+DELIMITER ;
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+### For predict table ###
+===============================================
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddToPredict`(
+	IN entry_patient_id INT,
+	IN entry_pred_diagnosis CHAR(1),
+	IN entry_probM VARCHAR(4),
+	IN entry_probB VARCHAR(4),
+	IN entry_radius_mean VARCHAR(6),
+	IN entry_texture_mean VARCHAR(6),
+	IN entry_perimeter_mean VARCHAR(6),
+	IN entry_area_mean VARCHAR(6),
+	IN entry_smoothness_mean VARCHAR(6),
+	IN entry_compactness_mean VARCHAR(6),
+	IN entry_concavity_mean VARCHAR(6),
+	IN entry_concave_points_mean VARCHAR(6),
+	IN entry_symmetry_mean VARCHAR(6),
+	IN entry_fractal_dimension_mean VARCHAR(6)
+)
+BEGIN
+		INSERT INTO predict
+		(
+			patient_id,
+			pred_diagnosis,
+			probM,
+			probB,
+  			radius_mean,
+  			texture_mean,
+  			perimeter_mean,
+  			area_mean,
+  			smoothness_mean,
+  			compactness_mean,
+  			concavity_mean,
+  			concave_points_mean,
+  			symmetry_mean,
+  			fractal_dimension_mean
+		)
+		VALUES
+		(
+			entry_patient_id,
+			entry_pred_diagnosis,
+			entry_probM,
+			entry_probB,
+  			entry_radius_mean,
+  			entry_texture_mean,
+  			entry_perimeter_mean,
+  			entry_area_mean,
+  			entry_smoothness_mean,
+  			entry_compactness_mean,
+  			entry_concavity_mean,
+  			entry_concave_points_mean,
+  			entry_symmetry_mean,
+  			entry_fractal_dimension_mean
+		);
+
+	END;;
+DELIMITER ;
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+
+### For train_data table ###
+===============================================
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `AddToTrainData`(
+	IN entry_upload_notes_id INT,
+  	IN entry_diagnosis CHAR(1),
+  	IN entry_radius_mean DECIMAL(11,5),
+  	IN entry_texture_mean DECIMAL(11,5),
+  	IN entry_perimeter_mean DECIMAL(11,5),
+  	IN entry_area_mean DECIMAL(11,5),
+  	IN entry_smoothness_mean DECIMAL(11,5),
+  	IN entry_compactness_mean DECIMAL(11,5),
+  	IN entry_concavity_mean DECIMAL(11,5),
+  	IN entry_concave_points_mean DECIMAL(11,5),
+  	IN entry_symmetry_mean DECIMAL(11,5),
+  	IN entry_fractal_dimension_mean DECIMAL(11,5)
+)
+BEGIN
+		INSERT INTO train_data
+		(
+			upload_notes_id,
+  			diagnosis,
+  			radius_mean,
+  			texture_mean,
+  			perimeter_mean,
+  			area_mean,
+  			smoothness_mean,
+  			compactness_mean,
+  			concavity_mean,
+  			concave_points_mean,
+  			symmetry_mean,
+  			fractal_dimension_mean
+		)
+		VALUES
+		(
+			entry_upload_notes_id,
+  			entry_diagnosis,
+  			entry_radius_mean,
+  			entry_texture_mean,
+  			entry_perimeter_mean,
+  			entry_area_mean,
+  			entry_smoothness_mean,
+  			entry_compactness_mean,
+  			entry_concavity_mean,
+  			entry_concave_points_mean,
+  			entry_symmetry_mean,
+  			entry_fractal_dimension_mean
+		);
+
+	END;;
+DELIMITER ;
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetTrainData`()
+BEGIN
+		SELECT 	diagnosis,
+  			radius_mean,
+  			texture_mean,
+  			perimeter_mean,
+  			area_mean,
+  			smoothness_mean,
+  			compactness_mean,
+  			concavity_mean,
+  			concave_points_mean,
+  			symmetry_mean,
+  			fractal_dimension_mean 
+		FROM train_data;
+	END;;
+DELIMITER ;
+
+===============================================

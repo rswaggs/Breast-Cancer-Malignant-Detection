@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, render_template, request, redirect, url_for, Response, flash
+from flask import Blueprint, render_template, request, redirect, url_for, Response, flash, send_from_directory
 
 # Database
 from db_extension import mysql
@@ -85,8 +85,11 @@ def data_upload():
 
 			if file:
 				
-				#for testing *(*Y*&T&843#@)
-				_user = 32443
+				# Get username of current user
+				if 'username' in session:
+					_user = session['username']
+				else:
+					raise ValueError("Username missing. How are you logged in?!")
         		
 				# Time database rows are started to be updated
 				_current_time = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -247,8 +250,8 @@ def export_template_file():
 			# Create file. Just require the header.
 			writer.writeheader()
 
-		# Download file
-		return Response(download_file,
+			# Download file
+			return Response(download_file,
 			mimetype="text/csv",
 			headers={"Content-Disposition":
 				"attachment;filename=breast_cancer_template.csv"})
@@ -292,7 +295,7 @@ def export_file():
 		cursor.callproc('GetTrainData')
 		data = cursor.fetchall()
 
-		with open("breast_cancer.csv", "w") as download_file:
+		with open("blueprints/temporary_files/breast_cancer.csv", "w") as download_file:
 			fieldnames = ['diagnosis', 'radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean',
 				'smoothness_mean', 'compactness_mean', 'concavity_mean', 'concave points_mean', 
 				'symmetry_mean', 'fractal_dimension_mean']
@@ -307,15 +310,16 @@ def export_file():
 					'compactness_mean': row[6], 'concavity_mean' : row[7], 'concave points_mean': row[8], 
 					'symmetry_mean': row[9], 'fractal_dimension_mean': row[10]})
 
-		# Close database connection
-		cursor.close() 
-		conn.close()
+			# Close database connection
+			cursor.close() 
+			conn.close()
 
-    # Download file
-		return Response(download_file,
-			mimetype="text/csv",
-      headers={"Content-Disposition":
-        "attachment;filename=breast_cancer.csv"})
+    			# Download file
+			# return Response(download_file,
+			# 	mimetype="text/csv",
+      # 				headers={"Content-Disposition":
+      #   			"attachment;filename=breast_cancer.csv"})
+			return send_from_directory("blueprints/temporary_files", "breast_cancer.csv", as_attachment=True)
 
 	except Exception as e:
 		return render_template('error.html',error = str(e))
