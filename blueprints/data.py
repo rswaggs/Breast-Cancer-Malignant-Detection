@@ -250,8 +250,8 @@ def export_template_file():
 			# Create file. Just require the header.
 			writer.writeheader()
 
-		# Download file
-		return Response(download_file,
+			# Download file
+			return Response(download_file,
 			mimetype="text/csv",
 			headers={"Content-Disposition":
 				"attachment;filename=breast_cancer_template.csv"})
@@ -310,15 +310,15 @@ def export_file():
 					'compactness_mean': row[6], 'concavity_mean' : row[7], 'concave points_mean': row[8], 
 					'symmetry_mean': row[9], 'fractal_dimension_mean': row[10]})
 
-		# Close database connection
-		cursor.close() 
-		conn.close()
+			# Close database connection
+			cursor.close() 
+			conn.close()
 
-    # Download file
-		return Response(download_file,
-			mimetype="text/csv",
-      headers={"Content-Disposition":
-        "attachment;filename=breast_cancer.csv"})
+    			# Download file
+			return Response(download_file,
+				mimetype="text/csv",
+      				headers={"Content-Disposition":
+        			"attachment;filename=breast_cancer.csv"})
 
 	except Exception as e:
 		return render_template('error.html',error = str(e))
