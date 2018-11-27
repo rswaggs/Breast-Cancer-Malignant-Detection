@@ -10,6 +10,8 @@ from blueprints.prediction import prediction_blueprint
 from blueprints.login import login_blueprint
 from blueprints.search import search_blueprint
 
+from wrapper_funcs import login_req
+
 app = Flask(__name__)
 app.secret_key = 'ESNlY88iNGA0iKh'
 
@@ -18,6 +20,7 @@ app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = ''
 app.config['MYSQL_DATABASE_DB'] = 'cds_breast_cancer'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+
 
 mysql.init_app(app)
 
@@ -32,6 +35,7 @@ app.register_blueprint(prediction_blueprint)
 APPLICATION
 '''
 @app.route('/main')
+@login_req
 def main_page():
 	try:
 		return render_template('main.html')
