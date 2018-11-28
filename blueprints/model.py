@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 
 # Database
 from db_extension import mysql
@@ -262,7 +262,7 @@ def model_update():
 
       # Get username of current user
       if 'username' in session:
-        _user = session['username']
+        _user = session.get('username')
       else:
         raise ValueError("Username missing. How are you logged in?!")
 

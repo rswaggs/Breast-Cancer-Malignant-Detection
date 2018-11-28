@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory
+from flask import Blueprint, render_template, request, redirect, url_for, flash, send_from_directory, session
 
 # Database
 from db_extension import mysql
@@ -87,7 +87,7 @@ def data_upload():
         
         # Get username of current user
         if 'username' in session:
-          _user = session['username']
+          _user = session.get('username')
         else:
           raise ValueError("Username missing. How are you logged in?!")
             
@@ -251,8 +251,8 @@ def export_template_file():
       # Create file. Just require the header.
       writer.writeheader()
 
-      # Download file
-      return send_from_directory("blueprints/temporary_files", "breast_cancer_template.csv", as_attachment=True)
+    # Download file
+    return send_from_directory("blueprints/temporary_files", "breast_cancer_template.csv", as_attachment=True)
 
   except Exception as e:
     return render_template('error.html',error = str(e))
@@ -312,8 +312,8 @@ def export_file():
       cursor.close() 
       conn.close()
 
-      # Download file
-      return send_from_directory("blueprints/temporary_files", "breast_cancer.csv", as_attachment=True)
+    # Download file
+    return send_from_directory("blueprints/temporary_files", "breast_cancer.csv", as_attachment=True)
 
   except Exception as e:
     return render_template('error.html',error = str(e))
