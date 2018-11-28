@@ -15,10 +15,10 @@
     </div>  
     
     <button name="submit" type="submit">Login</button>
-    <!-- <input type="submit" value="Login"> -->
-    <div>
-      <a href="#/">or signup</a>
-    </div>
+    {% if error %}
+    <p class="error"><strong>Error: </strong>{{error}}</p>
+    {% endif %}
   </form>
+
 </div>
 {% endblock %}

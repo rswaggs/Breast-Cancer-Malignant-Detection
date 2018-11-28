@@ -198,9 +198,9 @@ Output: Response object containing CSV file
 def export_template_file():
   try:
     with open("blueprints/temporary_files/prediction_template.csv", "w") as download_file:
-      fieldnames = ['patient_id', 'radius_mean', 
-        'texture_mean', 'perimeter_mean', 'area_mean', 'smoothness_mean', 'compactness_mean', 
-        'concavity_mean', 'concave points_mean', 'symmetry_mean', 'fractal_dimension_mean']
+      fieldnames = ['patient_id', 'radius_mean', 'texture_mean', 'perimeter_mean', 'area_mean', 
+                    'smoothness_mean', 'compactness_mean', 'concavity_mean', 'concave points_mean', 
+                    'symmetry_mean', 'fractal_dimension_mean']
       writer = csv.DictWriter(download_file, fieldnames=fieldnames)
 
       # Create file. Just require the header.

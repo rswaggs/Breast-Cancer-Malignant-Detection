@@ -17,7 +17,7 @@ app.secret_key = 'ESNlY88iNGA0iKh'
 
 # Database
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
+app.config['MYSQL_DATABASE_PASSWORD'] = ''  
 app.config['MYSQL_DATABASE_DB'] = 'cds_breast_cancer'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
@@ -39,7 +39,7 @@ APPLICATION
 def main_page():
 	try:
 		return render_template('main.html')
-        
+
 	except Exception as e:
 		return render_template('error.html', error = str(e))
 
