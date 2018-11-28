@@ -16,7 +16,7 @@ CREATE TABLE `clinician_data` (
 
 CREATE TABLE `data_upload_notes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `clinician_id` int(11) NOT NULL,
+  `clinician_id` varchar(45) NOT NULL,
   `upload_time` datetime NOT NULL,
   `source_notes` varchar(500) NOT NULL,
   PRIMARY KEY (`id`)
@@ -26,7 +26,7 @@ CREATE TABLE `data_upload_notes` (
 
 CREATE TABLE `model_update` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `clinician_id` int(11) NOT NULL,
+  `clinician_id` varchar(45) NOT NULL,
   `update_time` datetime NOT NULL,
   `criterion` varchar(7) NOT NULL,
   `splitter` varchar(6) NOT NULL,
@@ -128,7 +128,7 @@ DELIMITER ;
 
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddToUploadNotes`(
-	IN entry_clinician_id INT,
+	IN entry_clinician_id varchar(45),
   	IN entry_upload_time datetime,
   	IN entry_source_notes varchar(500)
 )
@@ -179,7 +179,7 @@ DELIMITER ;
 
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `AddToModelUpdates`(
-	IN entry_clinician_id INT,
+	IN entry_clinician_id varchar(45),
   	IN entry_criterion varchar(7),
   	IN entry_splitter varchar(6),
   	IN entry_max_depth varchar(4),
