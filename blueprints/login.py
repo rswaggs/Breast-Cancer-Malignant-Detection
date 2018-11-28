@@ -12,30 +12,38 @@ def redir_to_login():
 
 @login_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
-  if request.method == 'POST':
-    conn = mysql.connect()
-    cursor = conn.cursor()
+  error = None
+  try:
+    if request.method == 'POST':
+      conn = mysql.connect()
+      cursor = conn.cursor()
 
-    cursor.callproc('GetUserData')
-    user_data = cursor.fetchall()
+      cursor.callproc('GetUserData')
+      user_data = cursor.fetchall()
 
-    cursor.close()
-    conn.close()
+      cursor.close()
+      conn.close()
 
-    username = request.form['username']
-    password = request.form['password']
-    
-    for users in user_data:
-      if username == users[3]:
-        if password == users[4]:
-          session['logged_in'] = True
-          session['username'] = username
-          return redirect(url_for('search.searchpage'))
+      username = request.form['username']
+      password = request.form['password']
+      
+      for users in user_data:
+        if username == users[3]:
+          if password == users[4]:
+            session['logged_in'] = True
+            session['username'] = username
+            return redirect(url_for('main_page'))
 
-        else:
-          return render_template('views/login.html')
+          else:
+            error = "Invalid credentials. Try again"
+            return render_template('views/login.html')
 
-      return render_template('views/login.html')
+        error = "Invalid credentials. Try again"
+        return render_template('views/login.html', error=error)
 
-  else:
-    return render_template('views/login.html')
+    else:
+      return render_template('views/login.html',  error=error)
+
+  except Exception as e:
+    error = "Invalid credentials. Try again"
+    return render_template('views/login.html', error=error)
