@@ -26,7 +26,7 @@ Development tools:
 2. Test login (code in views/login.html, blueprints/login.py, wrapper_funcs.py)
   - Try navigating to /model, /data, /main, etc without logging in first
   - Try testing random incrrect username and passcode
-3. Search page (views/search.html, blueprints/search.py)
+3. Search page --> enter /search into the address bar to get there (views/search.html, blueprints/search.py)
   - Note: We were planning to make this work so that the user could look up the tumor prediction results to quickly view those results from this page. But, there did not end up being enough time.
   - For testing, start typing any cahracters. Names will show up that match the character patterns. You can use patient details once a name is selected.
 3. Data button (code in views/data.html and blueprints/data.py)
