@@ -87,7 +87,7 @@ def predict():
       
       # Else deal with webform inputs
       else:
-        patient_id = int(row['patient_id'])
+        patient_id = int(request.form['patient_id'])
         radius_mean = float( request.form['radius_mean'] )
         texture_mean = float( request.form['texture_mean'] )
         perimeter_mean = float( request.form['perimeter_mean'] )
