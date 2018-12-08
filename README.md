@@ -1,5 +1,4 @@
 # Breast-Cancer-Malignant-Detection
-=======================================
 
 As part of our clincial decision support course (computer science), we were tasked with creating a system to assist healthcare professionals. For our system, we used [UCI Irvine Machine Learning Repository’s Breast Cancer Wisconsin (Diagnostic) dataset](http://archive.ics.uci.edu/ml/datasets/Breast+Cancer) to classify if patients have malignant or benign cancer.
 
@@ -20,7 +19,6 @@ Development tools:
 
 
 ## Setup on your machine
-=======================================
 
 1. Download the project files from this Github.
 2. Create a virtualenv (lookup command) and activate the new virtual environment.
@@ -41,7 +39,6 @@ Using `python main.py` should work also.
 
 
 # Instructions for TA to test
-=======================================
 
 #### It's important to follow the guide in order, as the model needs data in the database to be trained, and the prediction page needs a model to run a prediction.
 ##### The main.py code connects all the separate Python files to work together using blueprints.
