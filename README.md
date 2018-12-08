@@ -1,4 +1,5 @@
 # Breast-Cancer-Malignant-Detection
+=======================================
 
 As part of our clincial decision support course (computer science), we were tasked with creating a system to assist healthcare professionals. For our system, we used [UCI Irvine Machine Learning Repository’s Breast Cancer Wisconsin (Diagnostic) dataset](http://archive.ics.uci.edu/ml/datasets/Breast+Cancer) to classify if patients have malignant or benign cancer.
 
@@ -14,11 +15,34 @@ Features:
 
 Development tools:
 - Frontend. HTML5, CSS3, Bootstrap.
-- Backend. Flask, MySQL (stored procedures).
+- Backend. Flask (Python 3.x.x), MySQL (stored procedures).
 - Machine learning. sklearn.
 
 
+## Setup on your machine
+=======================================
+
+1. Download the project files from this Github.
+2. Create a virtualenv (lookup command) and activate the new virtual environment.
+3. Install the requirements. `pip install -r requirements.txt`
+4. Create database named CDS_brest_cancer. Highly recommend using a GUI for ease of use.
+5. Import CDS_data_dump.sql into MySQL database. It creates the tables, stored procedures, and insert a bunch of data into those tables.
+5. Start the Flask server using:
+```
+$ export FLASK_APP=main.py
+$ flask run
+    * Running on http://127.0.0.1:5000/
+```
+If you are on Windows you need to use `set` instead of `export`.
+
+Using `python main.py` should work also.
+
+6. Go to `http://localhost:5000/` to test it out.
+
+
 # Instructions for TA to test
+=======================================
+
 #### It's important to follow the guide in order, as the model needs data in the database to be trained, and the prediction page needs a model to run a prediction.
 ##### The main.py code connects all the separate Python files to work together using blueprints.
 1. Enter website
